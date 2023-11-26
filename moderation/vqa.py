@@ -9,11 +9,13 @@ def load_image_from_url(url):
 
 vqa_pipeline = pipeline("visual-question-answering")
 
-def predict(url):
-    question = "Is there any animals in the photo?"
-    image = load_image_from_url(url)
-    result = vqa_pipeline(image, question, top_k=2)
-    return result
+def predict(questions, url):
+    for question in questions:
+        image = load_image_from_url(url)
+        result = vqa_pipeline(image, question, top_k=2)
+        if result[0]['score'] < 0.7 and result[0]['answer'] == 'no':
+            return False
+    return True
 
 
 url = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTu0gQ2u4YQPIh-xl0lewRNMkuHCBkGOzYcyHALieeu&s"

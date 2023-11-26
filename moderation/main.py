@@ -20,7 +20,7 @@ def predict_image():
                 'url': url,
             })
         vqa_prediction = predict(url)
-        if vqa_prediction[0]['score'] < 0.8 or vqa_prediction[0]['answer'] == 'no':
+        if not vqa_prediction:
             return jsonify({
                 'success': False,
                 'message': 'Ảnh không đúng nhiệm vụ',
