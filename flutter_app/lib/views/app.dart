@@ -1,3 +1,4 @@
+import 'package:flutter_app/provider/notifiers/activity.notifier.dart';
 import 'package:flutter_app/provider/notifiers/auth.notifier.dart';
 import 'package:flutter_app/provider/notifiers/post.notifier.dart';
 import 'package:flutter_app/provider/notifiers/profile.notifier.dart';
@@ -9,7 +10,6 @@ import 'package:flutter_app/views/screens/profile.screen.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_app/provider/notifiers/challenge.notifier.dart';
 import 'package:flutter_app/provider/store.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class MyApp extends StatefulWidget {
   const MyApp({Key? key}) : super(key: key);
@@ -53,6 +53,8 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider<AuthNotifier>.value(value: store.authNotifier),
           ChangeNotifierProvider<ProfileNotifier>.value(
               value: store.profileNotifier),
+          ChangeNotifierProvider<ActivityNotifier>.value(
+              value: store.activityNotifier),
         ],
         child: Consumer<AuthNotifier>(builder: (context, notifier, _) {
           return MaterialApp(

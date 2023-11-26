@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/core/constants/color_palatte.dart';
+import 'package:flutter_app/provider/actions/activity.action.dart';
 import 'package:flutter_app/provider/actions/auth.action.dart';
+import 'package:flutter_app/provider/notifiers/activity.notifier.dart';
 import 'package:flutter_app/provider/notifiers/auth.notifier.dart';
 import 'package:flutter_app/views/components/profile/activity.card.dart';
 import 'package:flutter_app/views/components/shared/loading.dart';
@@ -33,6 +35,31 @@ class ProfileScreenState extends State<ProfileScreen> {
   bool _isLoading = false;
   int _selectedIndex = 0;
   List<Activity> activities = [];
+  final activityNotifier = ActivityNotifier();
+  final authNotifier = AuthNotifier();
+
+  final activities_data = [
+    {
+      "name": "Hoạt động 1",
+      "location": "Địa điểm 1",
+      "achieve": 1,
+    },
+    {
+      "name": "Hoạt động 2",
+      "location": "Địa điểm 2",
+      "achieve": 2,
+    },
+    {
+      "name": "Hoạt động 3",
+      "location": "Địa điểm 3",
+      "achieve": 3,
+    },
+    {
+      "name": "Hoạt động 4",
+      "location": "Địa điểm 4",
+      "achieve": 4,
+    }
+  ];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -43,17 +70,15 @@ class ProfileScreenState extends State<ProfileScreen> {
   Widget buildInfo() {
     switch (_selectedIndex) {
       case 0:
-        return const Column(
-          children: [
-            ActivityCard(
-                name: "Hoạt động 1", location: "Địa điểm 1", achieve: 1),
-            ActivityCard(
-                name: "Hoạt động 2", location: "Địa điểm 2", achieve: 2),
-            ActivityCard(
-                name: "Hoạt động 3", location: "Địa điểm 3", achieve: 3),
-            ActivityCard(
-                name: "Hoạt động 4", location: "Địa điểm 4", achieve: 4),
-          ],
+        return Column(
+          children: activityNotifier.activities.map<Widget>((activity) {
+            return ActivityCard(
+                name: activity['name'] as String,
+                location: "Ha Noi",
+                achieve: activity['point'] as int,
+                category: activity['category'] as String,
+                );
+          }).toList(),
         );
       case 1:
         return const Text("1");
@@ -75,6 +100,7 @@ class ProfileScreenState extends State<ProfileScreen> {
 
   void loadProfile() async {
     await AuthActions.checkAuth(context.read<AuthNotifier>());
+    await ActivityActions.getActivities(activityNotifier);
     if (mounted) {
       setState(() {
         _isLoading = false;
@@ -92,6 +118,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                   children: <Widget>[
                     Container(
                       // color: ColorPalette.primaryColor,
+                      color: Colors.white,
                       width: double.infinity,
                       height: double.infinity,
                     ),
