@@ -19,7 +19,8 @@ def predict_image():
                 'message': 'Ảnh không phù hợp tiêu chuẩn',
                 'url': url,
             })
-        vqa_prediction = predict(url)
+        question = data['question']
+        vqa_prediction = predict(question, url)
         if not vqa_prediction:
             return jsonify({
                 'success': False,
