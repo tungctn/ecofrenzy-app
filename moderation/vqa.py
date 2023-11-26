@@ -13,7 +13,7 @@ def predict(questions, url):
     for question in questions:
         image = load_image_from_url(url)
         result = vqa_pipeline(image, question, top_k=2)
-        if result[0]['score'] < 0.7 and result[0]['answer'] == 'no':
+        if result[0]['score'] < 0.7 or result[0]['answer'] == 'no':
             return False
     return True
 
