@@ -4,6 +4,7 @@ import 'package:flutter_app/provider/actions/challenge.action.dart';
 import 'package:flutter_app/provider/notifiers/auth.notifier.dart';
 import 'package:flutter_app/provider/notifiers/challenge.notifier.dart';
 import 'package:flutter_app/utils/icon.dart';
+import 'package:flutter_app/views/components/shared/loading.dart';
 import 'package:flutter_app/views/screens/challenge.screen.dart';
 import 'package:flutter_app/views/screens/challenge_detector.screen.dart';
 import 'package:flutter_app/views/screens/feed.screen.dart';
@@ -27,6 +28,8 @@ class Navigation extends StatefulWidget {
 class NavigationState extends State<Navigation> {
   int _selectedIndex = 0;
   bool _isPicked = false;
+  bool _isLoading = false;
+  // final authNotifier = AuthNotifier();
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
@@ -70,19 +73,23 @@ class NavigationState extends State<Navigation> {
   @override
   void initState() {
     super.initState();
+    setState(() {
+      _isLoading = true;
+    });
     loadChallenges();
   }
 
   void loadChallenges() async {
     await ChallengeActions.fetchChallenges(context.read<ChallengeNotifier>());
+    // ignore: use_build_context_synchronously
+    await AuthActions.checkAuth(context.read<AuthNotifier>());
     if (mounted) {
-      print("load challenges");
-      print(ChallengeNotifier().challenges.length);
       bool isPicked = ChallengeNotifier()
           .challenges
           .any((e) => e.status == "Picked" || e.status == "Pending");
       setState(() {
         _isPicked = isPicked;
+        _isLoading = false;
       });
     }
   }
@@ -95,70 +102,79 @@ class NavigationState extends State<Navigation> {
   @override
   Widget build(BuildContext context) {
     return Consumer<ChallengeNotifier>(builder: (context, notifier, _) {
-      return Scaffold(
-        appBar: AppBar(
-          flexibleSpace: Container(
-            decoration: const BoxDecoration(
-              gradient: LinearGradient(
-                colors: [Color(0xFF38EB86), Color(0xFF39F5C4)],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.vertical(
-                bottom: Radius.circular(20),
+      return Consumer<AuthNotifier>(builder: (context, authNotifier, _) {
+        if (_isLoading) {
+          return const Scaffold(body: Loading());
+        }
+        return Scaffold(
+          appBar: AppBar(
+            flexibleSpace: Container(
+              decoration: const BoxDecoration(
+                gradient: LinearGradient(
+                  colors: [Color(0xFF38EB86), Color(0xFF39F5C4)],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
+                borderRadius: BorderRadius.vertical(
+                  bottom: Radius.circular(20),
+                ),
               ),
             ),
-          ),
-          centerTitle: true,
-          leading: const Icon(Icons.supervisor_account),
-          title: Text(
-            _selectedIndex == 0
-                ? "Today Challenge"
-                : _selectedIndex == 1
-                    ? "Feed"
-                    : _selectedIndex == 2
-                        ? "Leaderboard"
-                        : _selectedIndex == 3
-                            ? "Your Friends"
-                            : "Learn",
-            style: const TextStyle(
-                fontFamily: "Ridley Grotesk Bold", fontSize: 25),
-          ),
-          actions: [
-            IconButton(
-              icon: Image.asset('assets/images/avatar.png'),
-              onPressed: () {
-                handleProfile();
-              },
+            centerTitle: true,
+            leading: const Icon(Icons.supervisor_account),
+            title: Text(
+              _selectedIndex == 0
+                  ? "Today Challenge"
+                  : _selectedIndex == 1
+                      ? "Feed"
+                      : _selectedIndex == 2
+                          ? "Leaderboard"
+                          : _selectedIndex == 3
+                              ? "Your Friends"
+                              : "Learn",
+              style: const TextStyle(
+                  fontFamily: "Ridley Grotesk Bold", fontSize: 25),
             ),
-          ],
-        ),
-        body: _buildPage(),
-        bottomNavigationBar: Container(
-          decoration: BoxDecoration(
-            boxShadow: [
-              BoxShadow(
-                color: Colors.grey.withOpacity(0.2),
-                spreadRadius: 0,
-                blurRadius: 10,
-                offset: const Offset(0, -10),
+            actions: [
+              IconButton(
+                icon: CircleAvatar(
+                  backgroundImage: NetworkImage(authNotifier.user['image']),
+                  radius:
+                      20, // Bạn có thể điều chỉnh radius để thay đổi kích thước
+                ),
+                onPressed: () {
+                  handleProfile();
+                },
               ),
             ],
           ),
-          child: ClipRRect(
-            borderRadius: const BorderRadius.vertical(
-              top: Radius.circular(30),
+          body: _buildPage(),
+          bottomNavigationBar: Container(
+            decoration: BoxDecoration(
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.2),
+                  spreadRadius: 0,
+                  blurRadius: 10,
+                  offset: const Offset(0, -10),
+                ),
+              ],
             ),
-            child: BottomNavigationBar(
-              type: BottomNavigationBarType.fixed,
-              items: _buildBottomNavigationBarItems(notifier),
-              currentIndex: _selectedIndex,
-              selectedItemColor: Color(int.parse('FF68D69D', radix: 16)),
-              onTap: _onItemTapped,
+            child: ClipRRect(
+              borderRadius: const BorderRadius.vertical(
+                top: Radius.circular(30),
+              ),
+              child: BottomNavigationBar(
+                type: BottomNavigationBarType.fixed,
+                items: _buildBottomNavigationBarItems(notifier),
+                currentIndex: _selectedIndex,
+                selectedItemColor: Color(int.parse('FF68D69D', radix: 16)),
+                onTap: _onItemTapped,
+              ),
             ),
           ),
-        ),
-      );
+        );
+      });
     });
   }
 

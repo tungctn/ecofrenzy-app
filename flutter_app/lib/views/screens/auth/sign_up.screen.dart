@@ -4,6 +4,8 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:flutter_app/provider/actions/auth.action.dart';
+import 'package:flutter_app/provider/notifiers/auth.notifier.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_app/core/constants/color_palatte.dart';
 import 'package:flutter_app/core/constants/dismention_constants.dart';
@@ -16,6 +18,7 @@ import 'package:flutter_app/views/components/shared/input_card.dart';
 import 'package:flutter_app/views/components/shared/loading.dart';
 import 'package:flutter_app/views/components/shared/line_widget.dart';
 import 'package:flutter_app/utils/icon.dart';
+import 'package:provider/provider.dart';
 
 /*
 ...
@@ -36,6 +39,16 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String firstName = "";
   String lastName = "";
   String passwordConfirmation = "";
+  String name = "";
+  final authNotifier = AuthNotifier();
+
+  void handleRegister() async {
+    await AuthActions.register(authNotifier, name, email, password);
+    // ignore: use_build_context_synchronously
+    Navigator.push(
+        context, MaterialPageRoute(builder: (context) => const SignInScreen()));
+  }
+
   @override
   Widget build(BuildContext context) {
     return AppBarContainer(
@@ -48,6 +61,18 @@ class _SignUpScreenState extends State<SignUpScreen> {
             Image.asset(
               'assets/images/logo.jpg', // Đường dẫn đúng đến tệp hình ảnh trong thư mục assets
               fit: BoxFit.cover,
+            ),
+            const SizedBox(
+              height: kDefaultPadding * 2,
+            ),
+            StatefulBuilder(
+              builder: (context, setState) => InputCard(
+                style: TypeInputCard.name,
+                onchange: (String value) {
+                  name = value;
+                  setState(() {});
+                },
+              ),
             ),
             const SizedBox(
               height: kDefaultPadding * 2,
@@ -76,22 +101,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
             const SizedBox(
               height: kDefaultPadding * 2,
             ),
-            StatefulBuilder(
-              builder: (context, setState) => InputCard(
-                style: TypeInputCard.passwordConfirm,
-                onchange: (String value) {
-                  passwordConfirmation = value;
-                  setState(() {});
-                },
-              ),
-            ),
-            const SizedBox(
-              height: kDefaultPadding * 2,
-            ),
             ButtonWidget(
               title: "Sign Up",
               ontap: () {
-                Loading.show(context);
+                handleRegister();
+                // Loading.show(context);
                 //   _controller
                 //       ?.signByPassWord(email, password, passwordConfirmation)
                 //       .then((value) => {
@@ -220,7 +234,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     title: 'Google',
                     backgroundColor: ColorPalette.cardBackgroundColor,
                     textColor: ColorPalette.blackTextColor,
-                    icon: Icon(
+                    icon: const Icon(
                       FontAwesomeIcons.google,
                       color: ColorPalette.primaryColor,
                       size: kDefaultTextSize,
@@ -233,9 +247,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
                   flex: 1,
                   child: ButtonIconWidget(
                     title: 'Facebook',
-                    backgroundColor: Color(0xff3C5A9A),
-                    textColor: Color(0xffffffff),
-                    icon: Icon(
+                    backgroundColor: const Color(0xff3C5A9A),
+                    textColor: const Color(0xffffffff),
+                    icon: const Icon(
                       FontAwesomeIcons.facebookF,
                       color: Colors.white,
                     ),

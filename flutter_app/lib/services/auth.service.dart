@@ -33,10 +33,9 @@ class AuthService {
     final response = await http.post(
       Uri.parse('$api/auth/register'),
       headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
+        'Content-Type': 'application/json',
       },
-      body: jsonEncode(
-          <String, String>{'email': email, 'password': password, 'name': name}),
+      body: jsonEncode({'email': email, 'password': password, 'name': name}),
     );
 
     if (response.statusCode == 200) {
@@ -45,6 +44,7 @@ class AuthService {
       return jsonResponse;
     } else {
       throw Exception('Failed to register.');
+      print(response.body);
     }
   }
 

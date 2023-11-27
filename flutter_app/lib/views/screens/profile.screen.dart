@@ -2,11 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_app/core/constants/color_palatte.dart';
 import 'package:flutter_app/provider/actions/activity.action.dart';
 import 'package:flutter_app/provider/actions/auth.action.dart';
+import 'package:flutter_app/provider/actions/user.action.dart';
 import 'package:flutter_app/provider/notifiers/activity.notifier.dart';
 import 'package:flutter_app/provider/notifiers/auth.notifier.dart';
+import 'package:flutter_app/services/image.service.dart';
 import 'package:flutter_app/views/components/profile/activity.card.dart';
 import 'package:flutter_app/views/components/shared/loading.dart';
+import 'package:flutter_app/views/screens/auth/sign_in.screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
@@ -80,6 +84,7 @@ class ProfileScreenState extends State<ProfileScreen> {
               location: "Ha Noi",
               achieve: activity['point'] as int,
               category: activity['category'] as String,
+              image_url: activity["url"] as String,
             );
           }).toList(),
         );
@@ -119,9 +124,27 @@ class ProfileScreenState extends State<ProfileScreen> {
         setState(() {
           _image = pickedFile;
         });
+        await _uploadImage();
+        loadProfile();
       }
     } catch (e) {
       print("Lỗi khi chọn ảnh: $e");
+    }
+  }
+
+  Future<void> _uploadImage() async {
+    if (_image != null) {
+      setState(() {
+        _isLoading = true;
+      });
+      final response = await ImageService().uploadImageToServer(_image!.path);
+      if (response != null) {
+        await UserActions.updateUser({'image': response.toString()});
+      }
+      // Navigator.pop(context);
+      setState(() {
+        _isLoading = false;
+      });
     }
   }
 
@@ -177,7 +200,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                       Container(
                         alignment: Alignment.center,
                         width: double.infinity,
-                        height: 290,
+                        height: 340,
                         child: Stack(children: <Widget>[
                           Container(
                               alignment: Alignment.center,
@@ -186,7 +209,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                               padding:
                                   const EdgeInsets.only(left: 20, right: 20),
                               width: 352,
-                              height: 221,
+                              height: 250,
                               decoration: ShapeDecoration(
                                 color: Colors.white,
                                 shape: RoundedRectangleBorder(
@@ -207,7 +230,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                                     height: 40,
                                   ),
                                   Text(
-                                    notifier.user['name'],
+                                    notifier.user['name'] ?? "",
                                     textAlign: TextAlign.center,
                                     style: const TextStyle(
                                       color: Colors.black,
@@ -305,7 +328,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                                   const SizedBox(
                                     height: 10,
                                   ),
-                                  Row(
+                                  Column(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     crossAxisAlignment:
                                         CrossAxisAlignment.center,
@@ -339,32 +362,42 @@ class ProfileScreenState extends State<ProfileScreen> {
                                           label: const Text('Thay avatar'),
                                         ),
                                       ),
-                                      // Container(
-                                      //   width: 150,
-                                      //   decoration: ShapeDecoration(
-                                      //     shape: RoundedRectangleBorder(
-                                      //       borderRadius: BorderRadius.circular(20.19),
-                                      //     ),
-                                      //     shadows: const [
-                                      //       BoxShadow(
-                                      //         color: Color(0x7F5790DF),
-                                      //         blurRadius: 20.19,
-                                      //         offset: Offset(0, 10.09),
-                                      //         spreadRadius: 0,
-                                      //       )
-                                      //     ],
-                                      //   ),
-                                      //   child: ElevatedButton.icon(
-                                      //     onPressed: () {},
-                                      //     style: ElevatedButton.styleFrom(
-                                      //       backgroundColor: Colors.white,
-                                      //       foregroundColor: Colors.black,
-                                      //     ),
-                                      //     icon: const Icon(FontAwesomeIcons.paperPlane,
-                                      //         size: 15),
-                                      //     label: const Text('Challenge'),
-                                      //   ),
-                                      // )
+                                      Container(
+                                        width: 150,
+                                        decoration: ShapeDecoration(
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20.19),
+                                          ),
+                                          shadows: const [
+                                            BoxShadow(
+                                              color: Color(0x7F5790DF),
+                                              blurRadius: 20.19,
+                                              offset: Offset(0, 10.09),
+                                              spreadRadius: 0,
+                                            )
+                                          ],
+                                        ),
+                                        child: ElevatedButton.icon(
+                                          onPressed: () async {
+                                            await AuthActions.logout(notifier);
+                                            // ignore: use_build_context_synchronously
+                                            Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        const SignInScreen()));
+                                          },
+                                          style: ElevatedButton.styleFrom(
+                                            backgroundColor: Colors.white,
+                                            foregroundColor: Colors.black,
+                                          ),
+                                          icon: const Icon(
+                                              FontAwesomeIcons.paperPlane,
+                                              size: 15),
+                                          label: const Text('Đăng xuất'),
+                                        ),
+                                      )
                                     ],
                                   )
                                 ],
@@ -372,13 +405,16 @@ class ProfileScreenState extends State<ProfileScreen> {
                           Container(
                             margin:
                                 const EdgeInsets.only(left: 120, right: 120),
-                            child: IconButton(
-                              icon: Image.network(
-                                notifier.user['image'],
-                                width: 99,
-                                height: 99,
-                              ),
-                              onPressed: () {},
+                            width: 100,
+                            height: 100,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(50),
+                              color: Colors.white,
+                            ),
+                            child: CircleAvatar(
+                              backgroundImage:
+                                  NetworkImage(notifier.user['image']),
+                              radius: 50,
                             ),
                           ),
                         ]),

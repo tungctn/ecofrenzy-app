@@ -116,24 +116,23 @@ class _ChallengeDetectorViewState extends State<ChallengeDetectorView> {
 
   Future<void> uploadImageToServer(
       String filePath, String challengeId, Challenge challenge) async {
-    var uri = Uri.parse("http://34.142.196.144:4000/api/images");
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    var request = http.MultipartRequest('POST', uri)
-      ..headers.addAll({'Authorization': 'Bearer $token'})
-      ..files.add(await http.MultipartFile.fromPath(
-        'image',
-        filePath,
-        contentType: MediaType('image', 'jpg'),
-      ));
+    // var uri = Uri.parse("http://34.142.196.144:4000/api/images");
+    // var request = http.MultipartRequest('POST', uri)
+    //   ..headers.addAll({'Authorization': 'Bearer $token'})
+    //   ..files.add(await http.MultipartFile.fromPath(
+    //     'image',
+    //     filePath,
+    //     contentType: MediaType('image', 'jpg'),
+    //   ));
 
-    var streamedResponse = await request.send();
-    var response = await http.Response.fromStream(streamedResponse);
-    if (response.statusCode == 200) {
+    // var streamedResponse = await request.send();
+    // var response = await http.Response.fromStream(streamedResponse);
+    final response = await ImageService().uploadImageToServer(filePath);
+    if (response) {
       print("Response body: ${response.body}");
       print(jsonDecode(response.body.toString())['data']['image']['url']);
-      var predictResponse = await ImageService().predictImage(
-          jsonDecode(response.body.toString())['data']['image']['url'],
-          challenge);
+      var predictResponse =
+          await ImageService().predictImage(response, challenge);
       if (predictResponse['success']) {
         Fluttertoast.showToast(
             msg: predictResponse['message'],
@@ -144,7 +143,7 @@ class _ChallengeDetectorViewState extends State<ChallengeDetectorView> {
             backgroundColor: Colors.green,
             fontSize: 16.0);
         final post = {
-          "image": jsonDecode(response.body.toString())['data']['image']['url'],
+          "image": response,
           "challengeId": challenge.id.toString(),
         };
         print(post['image']);

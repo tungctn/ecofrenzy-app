@@ -19,10 +19,10 @@ class AuthActions {
   static Future<void> register(
       AuthNotifier notifier, String name, String email, String password) async {
     try {
-      Map<String, dynamic> user =
-          await AuthService().register(name, email, password);
-      notifier.setUser(user);
-      notifier.isLogged = true;
+      // Map<String, dynamic> user =
+      await AuthService().register(name, email, password);
+      // notifier.setUser(user);
+      // notifier.isLogged = true;
     } catch (error) {
       rethrow;
     }
