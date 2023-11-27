@@ -10,7 +10,12 @@ class ActivityService {
     final response = await http.get(Uri.parse('$api/activity/$userId'));
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
-      return jsonResponse["activity"]['challenge'];
+      print(jsonResponse);
+      if (jsonResponse["activity"] != null) {
+        return jsonResponse["activity"]['challenge'];
+      } else {
+        return [];
+      }
     } else {
       throw Exception('Failed to load activities');
     }

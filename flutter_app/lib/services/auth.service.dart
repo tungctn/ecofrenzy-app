@@ -29,7 +29,6 @@ class AuthService {
   }
 
   Future<dynamic> register(String name, String email, String password) async {
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
     final response = await http.post(
       Uri.parse('$api/auth/register'),
       headers: <String, String>{
@@ -44,7 +43,6 @@ class AuthService {
       return jsonResponse;
     } else {
       throw Exception('Failed to register.');
-      print(response.body);
     }
   }
 

@@ -78,15 +78,17 @@ class ProfileScreenState extends State<ProfileScreen> {
     switch (_selectedIndex) {
       case 0:
         return Column(
-          children: activityNotifier.activities.map<Widget>((activity) {
-            return ActivityCard(
-              name: activity['name'] as String,
-              location: "Ha Noi",
-              achieve: activity['point'] as int,
-              category: activity['category'] as String,
-              image_url: activity["url"] as String,
-            );
-          }).toList(),
+          children: activityNotifier.activities.isEmpty
+              ? [const Text("Bạn chưa có hoạt động nào")]
+              : activityNotifier.activities.map<Widget>((activity) {
+                  return ActivityCard(
+                    name: activity['name'] as String,
+                    location: "Ha Noi",
+                    achieve: activity['point'] as int,
+                    category: activity['category'] as String,
+                    image_url: activity["url"] as String,
+                  );
+                }).toList(),
         );
       case 1:
         return const Text("1");
