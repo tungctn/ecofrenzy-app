@@ -7,6 +7,7 @@ import 'package:flutter_app/provider/actions/challenge.action.dart';
 import 'package:flutter_app/provider/actions/post.action.dart';
 import 'package:flutter_app/provider/notifiers/challenge.notifier.dart';
 import 'package:flutter_app/provider/notifiers/post.notifier.dart';
+import 'package:flutter_app/services/image.service.dart';
 import 'package:flutter_app/utils/constants.dart';
 import 'package:flutter_app/utils/icon.dart';
 import 'package:flutter_app/views/components/challenge/challenge_camera.card.dart';
@@ -15,8 +16,6 @@ import 'package:http_parser/http_parser.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-
-import '../../models/post.dart';
 
 class ChallengeDetectorView extends StatefulWidget {
   const ChallengeDetectorView({Key? key}) : super(key: key);
@@ -27,11 +26,13 @@ class ChallengeDetectorView extends StatefulWidget {
 }
 
 class _ChallengeDetectorViewState extends State<ChallengeDetectorView> {
-  late CameraController _controller;
+  CameraController? _controller;
   List<CameraDescription> cameras = [];
   bool _isLoading = false;
   final challengeNotifier = ChallengeNotifier();
   final postNotifier = PostNotifier();
+  int _selectedCameraIdx = 0;
+  final navigator = const Navigator();
 
   @override
   void initState() {
@@ -41,30 +42,31 @@ class _ChallengeDetectorViewState extends State<ChallengeDetectorView> {
 
   Future<void> _initializeCamera() async {
     cameras = await availableCameras();
+    // if (cameras.isNotEmpty) {
+    _controller = CameraController(
+      cameras[_selectedCameraIdx],
+      ResolutionPreset.medium,
+    );
 
-    if (cameras.isNotEmpty) {
-      _controller = CameraController(
-        cameras[0],
-        ResolutionPreset.medium,
-      );
-
-      _controller.initialize().then((_) {
-        if (!mounted) {
-          return;
-        }
-        setState(() {});
-      });
-    }
+    _controller?.initialize().then((_) {
+      if (!mounted) {
+        return;
+      }
+      setState(() {});
+    });
+    // } else {
+    //   print("No camera available!");
+    // }
   }
 
   Future<void> _takePicture(Challenge challenge) async {
-    if (!_controller.value.isInitialized) {
+    if (!_controller!.value.isInitialized) {
       print("Error: Camera is not initialized!");
       return;
     }
 
     try {
-      XFile file = await _controller.takePicture();
+      XFile file = await _controller!.takePicture();
       print(file.path);
       setState(() {
         _isLoading = true;
@@ -79,6 +81,37 @@ class _ChallengeDetectorViewState extends State<ChallengeDetectorView> {
         _isLoading = false;
       });
     }
+  }
+
+  Future<void> _onSwitchCamera() async {
+    print("Switching camera!");
+    print(cameras.length);
+    print(_selectedCameraIdx);
+    _selectedCameraIdx = _selectedCameraIdx == 1 ? 0 : 1;
+    setState(() {
+      _selectedCameraIdx = _selectedCameraIdx;
+    });
+    _initializeCamera();
+
+    // CameraDescription selectedCamera = cameras[_selectedCameraIdx];
+
+    // if (_controller!.value.isInitialized) {
+    //   await _controller?.dispose();
+    // }
+
+    // setState(() {
+    //   _controller = CameraController(
+    //     selectedCamera,
+    //     ResolutionPreset.medium,
+    //   );
+    // });
+
+    // _controller?.initialize().then((_) {
+    //   if (!mounted) {
+    //     return;
+    //   }
+    //   setState(() {});
+    // });
   }
 
   Future<void> uploadImageToServer(
@@ -98,24 +131,40 @@ class _ChallengeDetectorViewState extends State<ChallengeDetectorView> {
     if (response.statusCode == 200) {
       print("Response body: ${response.body}");
       print(jsonDecode(response.body.toString())['data']['image']['url']);
-      Fluttertoast.showToast(
-          msg: "Upload successful",
-          toastLength: Toast.LENGTH_SHORT,
-          gravity: ToastGravity.CENTER,
-          timeInSecForIosWeb: 3,
-          textColor: Colors.white,
-          backgroundColor: Colors.green,
-          fontSize: 16.0);
-      final post = {
-        "image": jsonDecode(response.body.toString())['data']['image']['url'],
-        "challengeId": challenge.id.toString(),
-      };
-      print(post['image']);
-      print(post['challengeId']);
-      ChallengeActions.doneChallenge(
-          challengeNotifier, challengeId, postNotifier);
-      PostActions.createPost(postNotifier, post['image'], post['challengeId']);
-
+      var predictResponse = await ImageService().predictImage(
+          jsonDecode(response.body.toString())['data']['image']['url'],
+          challenge);
+      if (predictResponse['success']) {
+        Fluttertoast.showToast(
+            msg: predictResponse['message'],
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 3,
+            textColor: Colors.white,
+            backgroundColor: Colors.green,
+            fontSize: 16.0);
+        final post = {
+          "image": jsonDecode(response.body.toString())['data']['image']['url'],
+          "challengeId": challenge.id.toString(),
+        };
+        print(post['image']);
+        print(post['challengeId']);
+        // ignore: use_build_context_synchronously
+        Navigator.pop(context);
+        ChallengeActions.doneChallenge(
+            challengeNotifier, challengeId, post['image'], postNotifier);
+        PostActions.createPost(
+            postNotifier, post['image'], post['challengeId']);
+      } else {
+        Fluttertoast.showToast(
+            msg: predictResponse['message'],
+            toastLength: Toast.LENGTH_SHORT,
+            gravity: ToastGravity.CENTER,
+            timeInSecForIosWeb: 3,
+            textColor: Colors.white,
+            backgroundColor: Colors.red,
+            fontSize: 16.0);
+      }
     } else {
       print("Upload failed with status code: ${response.statusCode}");
       print("Response body: ${response.body}");
@@ -124,8 +173,13 @@ class _ChallengeDetectorViewState extends State<ChallengeDetectorView> {
 
   @override
   Widget build(BuildContext context) {
-    if (!_controller.value.isInitialized) {
-      return const Center(child: CircularProgressIndicator());
+    if (_controller == null || !_controller!.value.isInitialized) {
+      return const Center(
+        child: CircularProgressIndicator(
+          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+          strokeWidth: 7,
+        ),
+      );
     }
 
     return Consumer<ChallengeNotifier>(builder: (context, notifier, _) {
@@ -136,11 +190,12 @@ class _ChallengeDetectorViewState extends State<ChallengeDetectorView> {
         body: Stack(
           fit: StackFit.expand,
           children: <Widget>[
-            CameraPreview(_controller),
+            CameraPreview(_controller!),
             _backButton(),
             _challengeDescription(challengePicked.first),
             _cameraAltButton(challengePicked.first),
             _isLoading ? _loadingWidget() : const SizedBox.shrink(),
+            _toggleCameraButton(),
           ],
         ),
       );
@@ -149,7 +204,7 @@ class _ChallengeDetectorViewState extends State<ChallengeDetectorView> {
 
   @override
   void dispose() {
-    _controller.dispose();
+    _controller?.dispose();
     super.dispose();
   }
 
@@ -195,6 +250,22 @@ class _ChallengeDetectorViewState extends State<ChallengeDetectorView> {
               valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
               strokeWidth: 7,
             ),
+          ),
+        ),
+      );
+  Widget _toggleCameraButton() => Positioned(
+        bottom: 40,
+        right: 10,
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(50),
+          ),
+          height: 60,
+          width: 60,
+          child: IconButton(
+            icon: const Icon(Icons.cameraswitch, size: 40),
+            onPressed: _onSwitchCamera,
           ),
         ),
       );

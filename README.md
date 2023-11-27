@@ -38,6 +38,10 @@ Cách thực hiện:
   Category: Energy and Resources
   level: Easy
   point: 50
+  question: [
+  "Is there a water-saving shower head in your photo?",
+  "Is someone with a water-saving shower head in your photo?"
+  ]
 
   2.Thử thách: Lắp đặt tấm pin năng lượng mặt trời cho ngôi nhà của bạn (Dựa trên ảnh)
   Tác động: Khuyến khích sử dụng các nguồn năng lượng tái tạo bằng cách thúc đẩy các lựa chọn chiếu sáng bằng năng lượng mặt trời
@@ -51,6 +55,10 @@ Cách thực hiện:
   Category: Energy and Resources
   level: Intermediate
   point: 100
+  question: [
+  "Is there a solar panel in your photo?",
+  "Is someone with a solar panel in your photo?"
+  ]
 
   3.Thử thách: Giặt khô trên dây (Dựa trên ảnh)
   Tác động: Giảm tiêu hao năng lượng bằng cách sấy quần áo bằng không khí thay vì dùng máy sấy điện
@@ -64,6 +72,10 @@ Cách thực hiện:
   Category: Energy and Resources
   level: Easy
   point: 50
+  question: [
+  "Are clothes visible hanging on a line outdoors?"
+  "Does the photo show a natural environment for air-drying clothes?"
+  ]
 
   4.Thử thách: Đạp xe đi làm (Dựa trên ảnh)
   Tác động: Thúc đẩy việc đi xe đạp như một phương thức vận chuyển bền vững, giảm lượng khí thải carbon và ô nhiễm không khí do sử dụng phương tiện giao thông.
@@ -77,6 +89,10 @@ Cách thực hiện:
   Category: Transportation
   level: Easy
   point: 50
+  question: [
+  "Is there a bicycle in your photo?",
+  "Is someone with a bicycle in your photo?"
+  ]
 
   5.Thử thách: Sử dụng phương tiện giao thông công cộng (Dựa trên ảnh)
   Tác động: Khuyến khích người dùng sử dụng phương tiện công cộng, giảm số lượng phương tiện chở một người trên đường và giảm lượng khí thải carbon.
@@ -89,6 +105,10 @@ Cách thực hiện:
   Category: Transportation
   level: Easy
   point: 50
+  question: [
+  "Is there a public transport in your photo?",
+  "Is someone with a public transport in your photo?"
+  ]
 
   6.Thử thách: Đi xe cùng người khác (Dựa trên ảnh)
   Tác động: Giảm lượng khí thải carbon của từng cá nhân bằng cách đi chung xe với những người khác, dẫn đến có ít phương tiện lưu thông trên đường hơn và mức tiêu thụ nhiên liệu thấp hơn.
@@ -101,6 +121,10 @@ Cách thực hiện:
   Category: Transportation
   level: Easy
   point: 50
+  question: [
+  "Does the photo show multiple people in a single car?"
+  "Can you identify any carpooling signs or symbols in the image?"
+  ]
 
   7.Thử thách: Thứ Hai không thịt (Dựa trên ảnh)
   Tác động: Khuyến khích người dùng tiêu thụ bữa ăn chay trong ngày, giảm nhu cầu về thịt, loại thịt có lượng khí thải carbon cao hơn so với thực phẩm có nguồn gốc thực vật.
@@ -113,6 +137,10 @@ Cách thực hiện:
   Category: Consumption
   level: Easy
   point: 50
+  question: [
+  "Does the meal in the photo appear to be vegetarian?",
+  "Is there someone with a vegetarian meal in your photo?"
+  ]
 
   8.Thử thách: Mang theo túi riêng của bạn (Dựa trên ảnh)
   Tác động: Người dùng mang túi mua sắm có thể tái sử dụng của riêng mình đến cửa hàng, giảm thiểu rác thải và ô nhiễm túi nhựa dùng một lần.
@@ -125,6 +153,10 @@ Cách thực hiện:
   Category: Consumption
   level: Easy
   point: 50
+  question: [
+  "Is there a reusable bag in your photo?",
+  "Is someone with a reusable bag in your photo?"
+  ]
 
   9.Thách thức: Trồng cây tại khu vực địa phương (Dựa trên ảnh)
   Tác động: Trồng cây góp phần cô lập carbon, cải thiện chất lượng không khí và hỗ trợ đa dạng sinh học địa phương.
@@ -137,6 +169,10 @@ Cách thực hiện:
   Category: Forestry
   level: Easy
   point: 50
+  question: [
+  "Is there a plant in your photo?",
+  "Is someone with a plant in your photo?"
+  ]
 
   10.Thử thách: Bắt đầu một Vườn Thảo mộc và Vườn Rau (Dựa trên Ảnh)
   Tác động: Trồng thảo mộc tại nhà giúp giảm nhu cầu về các loại thảo mộc mua ở cửa hàng, cắt giảm bao bì nhựa và khí thải vận chuyển.
@@ -149,3 +185,7 @@ Cách thực hiện:
   Category: Forestry
   level: Easy
   point: 50
+  question: [
+  "Is there a herb or vegetables garden in your photo?",
+  "Is someone with a herb or vegetables garden in your photo?"
+  ]

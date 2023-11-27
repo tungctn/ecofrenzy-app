@@ -7,6 +7,7 @@ import 'package:flutter_app/provider/notifiers/auth.notifier.dart';
 import 'package:flutter_app/views/components/profile/activity.card.dart';
 import 'package:flutter_app/views/components/shared/loading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -37,6 +38,8 @@ class ProfileScreenState extends State<ProfileScreen> {
   List<Activity> activities = [];
   final activityNotifier = ActivityNotifier();
   final authNotifier = AuthNotifier();
+  final ImagePicker _picker = ImagePicker();
+  XFile? _image;
 
   final activities_data = [
     {
@@ -73,11 +76,11 @@ class ProfileScreenState extends State<ProfileScreen> {
         return Column(
           children: activityNotifier.activities.map<Widget>((activity) {
             return ActivityCard(
-                name: activity['name'] as String,
-                location: "Ha Noi",
-                achieve: activity['point'] as int,
-                category: activity['category'] as String,
-                );
+              name: activity['name'] as String,
+              location: "Ha Noi",
+              achieve: activity['point'] as int,
+              category: activity['category'] as String,
+            );
           }).toList(),
         );
       case 1:
@@ -105,6 +108,20 @@ class ProfileScreenState extends State<ProfileScreen> {
       setState(() {
         _isLoading = false;
       });
+    }
+  }
+
+  Future<void> _pickImage() async {
+    try {
+      final XFile? pickedFile =
+          await _picker.pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        setState(() {
+          _image = pickedFile;
+        });
+      }
+    } catch (e) {
+      print("Lỗi khi chọn ảnh: $e");
     }
   }
 
@@ -310,7 +327,9 @@ class ProfileScreenState extends State<ProfileScreen> {
                                           ],
                                         ),
                                         child: ElevatedButton.icon(
-                                          onPressed: () {},
+                                          onPressed: () {
+                                            _pickImage();
+                                          },
                                           style: ElevatedButton.styleFrom(
                                             backgroundColor:
                                                 const Color(0xFF7367F0),

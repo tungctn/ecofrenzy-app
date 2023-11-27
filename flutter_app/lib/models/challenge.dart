@@ -13,6 +13,7 @@ class Challenge {
   // final DateTime createdAt;
   // final DateTime updatedAt;
   final List<dynamic> implemetation;
+  final List<dynamic> verification;
 
   Challenge({
     required this.id,
@@ -25,7 +26,7 @@ class Challenge {
     required this.status,
     // required this.creativity,
     required this.caption,
-    // required this.verification,
+    required this.verification,
     // required this.createdAt,
     // required this.updatedAt,
     required this.implemetation,
@@ -50,6 +51,7 @@ class Challenge {
       // createdAt: DateTime.parse(json['createdAt']),
       // updatedAt: DateTime.parse(json['updatedAt']),
       implemetation: json['implementation'],
+      verification: json['verification'],
     );
   }
 }

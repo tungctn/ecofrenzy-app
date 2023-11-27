@@ -4,8 +4,6 @@ import 'package:flutter_app/provider/notifiers/post.notifier.dart';
 import 'package:flutter_app/services/challenge.service.dart';
 import 'package:flutter_app/services/post.service.dart';
 
-import '../../models/post.dart';
-
 class ChallengeActions {
   static Future<void> fetchChallenges(ChallengeNotifier notifier) async {
     try {
@@ -30,11 +28,11 @@ class ChallengeActions {
   }
 
   static Future<void> doneChallenge(ChallengeNotifier challengeNotifier,
-      String challengeId, PostNotifier postNotifier) async {
+      String challengeId, String url, PostNotifier postNotifier) async {
     try {
-      ChallengeService().doneChallenge(challengeId);
+      ChallengeService().doneChallenge(challengeId, url);
       List<Challenge> challenges =
-          await ChallengeService().doneChallenge(challengeId);
+          await ChallengeService().doneChallenge(challengeId, url);
       List<dynamic> posts = await PostService().fetchPosts();
       challengeNotifier.setChallenges(challenges);
       postNotifier.setPosts(posts);

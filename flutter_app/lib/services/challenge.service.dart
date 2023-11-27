@@ -41,12 +41,16 @@ class ChallengeService {
     }
   }
 
-  Future<List<Challenge>> doneChallenge(String challengeId) async {
+  Future<List<Challenge>> doneChallenge(String challengeId, String url) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     final response = await http.patch(
       Uri.parse(
           '$api/user/${prefs.getString('userId')}/challenge/$challengeId/done'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode({"url": url}),
     );
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
