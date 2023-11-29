@@ -15,4 +15,4 @@ def detect_moderation_labels_from_url(image_url):
 
 image_url = 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTu0gQ2u4YQPIh-xl0lewRNMkuHCBkGOzYcyHALieeu&s'
 labels = detect_moderation_labels_from_url(image_url)
-print(labels)
+#print(labels)

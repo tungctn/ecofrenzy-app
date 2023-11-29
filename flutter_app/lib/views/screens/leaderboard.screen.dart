@@ -18,7 +18,7 @@ class LeaderBoardScreenState extends State<LeaderBoardScreen> {
     1500,
   ];
   final yourPoints = 500;
-  final heightInit = 400;
+  final heightInit = 300;
 
   @override
   Widget build(BuildContext context) {
@@ -49,14 +49,13 @@ class LeaderBoardScreenState extends State<LeaderBoardScreen> {
                   child: Text("TOP 3 PLAYERS",
                       style: TextStyle(
                         fontSize: 25,
-                        color: Colors.black,
-                        fontWeight: FontWeight.w800,
+                        color: Color(0xff5F2AC5),
+                        fontWeight: FontWeight.w900,
                         fontFamily: "Ridley Grotesk Bold",
                       )),
                 ),
-                const SizedBox(height: 50),
+                const SizedBox(height: 30),
                 Column(
-                  // mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
                     Center(

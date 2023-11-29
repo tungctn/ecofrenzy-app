@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/provider/actions/post.action.dart';
 import 'package:flutter_app/provider/notifiers/post.notifier.dart';

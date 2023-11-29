@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app/core/constants/color_palatte.dart';
 import 'package:flutter_app/provider/actions/activity.action.dart';
 import 'package:flutter_app/provider/actions/auth.action.dart';
 import 'package:flutter_app/provider/actions/user.action.dart';
@@ -10,7 +9,6 @@ import 'package:flutter_app/views/components/profile/activity.card.dart';
 import 'package:flutter_app/views/components/shared/loading.dart';
 import 'package:flutter_app/views/screens/auth/sign_in.screen.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
@@ -404,21 +402,22 @@ class ProfileScreenState extends State<ProfileScreen> {
                                   )
                                 ],
                               )),
-                          Container(
-                            margin:
-                                const EdgeInsets.only(left: 120, right: 120),
-                            width: 100,
-                            height: 100,
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(50),
-                              color: Colors.white,
+                          Align(
+                            alignment: Alignment.topCenter,
+                            child: Container(
+                              width: 100,
+                              height: 100,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(50),
+                                color: Colors.white,
+                              ),
+                              child: CircleAvatar(
+                                backgroundImage:
+                                    NetworkImage(notifier.user['image']),
+                                radius: 50,
+                              ),
                             ),
-                            child: CircleAvatar(
-                              backgroundImage:
-                                  NetworkImage(notifier.user['image']),
-                              radius: 50,
-                            ),
-                          ),
+                          )
                         ]),
                       ),
                       const SizedBox(

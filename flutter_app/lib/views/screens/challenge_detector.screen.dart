@@ -8,14 +8,14 @@ import 'package:flutter_app/provider/actions/post.action.dart';
 import 'package:flutter_app/provider/notifiers/challenge.notifier.dart';
 import 'package:flutter_app/provider/notifiers/post.notifier.dart';
 import 'package:flutter_app/services/image.service.dart';
-import 'package:flutter_app/utils/constants.dart';
 import 'package:flutter_app/utils/icon.dart';
 import 'package:flutter_app/views/components/challenge/challenge_camera.card.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:provider/provider.dart';
-import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:http/http.dart' as http;
+import 'package:flutter_app/utils/constants.dart';
 
 class ChallengeDetectorView extends StatefulWidget {
   const ChallengeDetectorView({Key? key}) : super(key: key);
@@ -116,23 +116,26 @@ class _ChallengeDetectorViewState extends State<ChallengeDetectorView> {
 
   Future<void> uploadImageToServer(
       String filePath, String challengeId, Challenge challenge) async {
-    // var uri = Uri.parse("http://34.142.196.144:4000/api/images");
-    // var request = http.MultipartRequest('POST', uri)
-    //   ..headers.addAll({'Authorization': 'Bearer $token'})
-    //   ..files.add(await http.MultipartFile.fromPath(
-    //     'image',
-    //     filePath,
-    //     contentType: MediaType('image', 'jpg'),
-    //   ));
+    var uri = Uri.parse("http://34.142.196.144:4000/api/images");
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    var request = http.MultipartRequest('POST', uri)
+      ..headers.addAll({'Authorization': 'Bearer $token'})
+      ..files.add(await http.MultipartFile.fromPath(
+        'image',
+        filePath,
+        contentType: MediaType('image', 'jpg'),
+      ));
 
-    // var streamedResponse = await request.send();
-    // var response = await http.Response.fromStream(streamedResponse);
-    final response = await ImageService().uploadImageToServer(filePath);
-    if (response) {
+    var streamedResponse = await request.send();
+    var response = await http.Response.fromStream(streamedResponse);
+    if (response.statusCode == 200) {
+      // if (response != null) {
       print("Response body: ${response.body}");
       print(jsonDecode(response.body.toString())['data']['image']['url']);
-      var predictResponse =
-          await ImageService().predictImage(response, challenge);
+      var predictResponse = await ImageService().predictImage(
+          jsonDecode(response.body.toString())['data']['image']['url'],
+          challenge);
+      print(predictResponse['success']);
       if (predictResponse['success']) {
         Fluttertoast.showToast(
             msg: predictResponse['message'],
@@ -143,7 +146,7 @@ class _ChallengeDetectorViewState extends State<ChallengeDetectorView> {
             backgroundColor: Colors.green,
             fontSize: 16.0);
         final post = {
-          "image": response,
+          "image": jsonDecode(response.body.toString())['data']['image']['url'],
           "challengeId": challenge.id.toString(),
         };
         print(post['image']);

@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:flutter_app/core/constants/color_palatte.dart';
 import 'package:flutter_app/core/constants/dismention_constants.dart';
 import 'package:flutter_app/core/constants/textstyle_constants.dart';
-import 'package:flutter_app/utils/icon.dart';
 
 class AppBarContainer extends StatelessWidget {
   AppBarContainer({

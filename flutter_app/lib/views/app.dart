@@ -2,6 +2,7 @@ import 'package:flutter_app/provider/notifiers/activity.notifier.dart';
 import 'package:flutter_app/provider/notifiers/auth.notifier.dart';
 import 'package:flutter_app/provider/notifiers/post.notifier.dart';
 import 'package:flutter_app/provider/notifiers/profile.notifier.dart';
+import 'package:flutter_app/provider/notifiers/user.notifier.dart';
 import 'package:flutter_app/views/layouts/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/views/screens/auth/sign_in.screen.dart';
@@ -55,6 +56,7 @@ class _MyAppState extends State<MyApp> {
               value: store.profileNotifier),
           ChangeNotifierProvider<ActivityNotifier>.value(
               value: store.activityNotifier),
+          ChangeNotifierProvider<UserNotifier>.value(value: store.userNotifier),
         ],
         child: Consumer<AuthNotifier>(builder: (context, notifier, _) {
           return MaterialApp(

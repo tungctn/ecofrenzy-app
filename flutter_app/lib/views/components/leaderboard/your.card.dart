@@ -26,7 +26,7 @@ class YourCard extends StatelessWidget {
             width: 100,
             height: 130,
             decoration: const BoxDecoration(
-              color: Colors.white,
+              color: Color(0xFF4A2198),
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(30),
                 topRight: Radius.circular(30),
@@ -57,6 +57,7 @@ class YourCard extends StatelessWidget {
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
+                    color: Colors.white,
                   ),
                 ),
               ],
