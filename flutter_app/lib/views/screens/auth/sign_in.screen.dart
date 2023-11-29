@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/core/utils/toast_utils.dart';
 import 'package:flutter_app/provider/actions/auth.action.dart';
 import 'package:flutter_app/provider/notifiers/auth.notifier.dart';
 import 'package:flutter_app/views/layouts/navigation.dart';
@@ -51,10 +52,19 @@ class _SignInScreenState extends State<SignInScreen> {
   }
 
   void handleSignIn() async {
-    await AuthActions.login(context.read<AuthNotifier>(), email, password);
+    FocusScope.of(context).requestFocus(new FocusNode());
+    Map<String, dynamic> response =
+        await AuthActions.login(context.read<AuthNotifier>(), email, password);
     Loading.dismiss(context);
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => const Navigation()));
+
+    if (response["errors"]) {
+      ToastUtils.showToast(context, response["message"], TypeToast.error);
+      setState(() {});
+    } else {
+      ToastUtils.showToast(context, response["message"], TypeToast.success);
+      Navigator.push(
+          context, MaterialPageRoute(builder: (context) => const Navigation()));
+    }
   }
 
   @override
@@ -172,15 +182,15 @@ class _SignInScreenState extends State<SignInScreen> {
               ButtonWidget(
                 title: "Sign In",
                 ontap: () async {
-                  if (rememberMe == true) {
-                    LocalStorageHelper.setValue("email", email);
-                    LocalStorageHelper.setValue("password", password);
-                  } else {
-                    LocalStorageHelper.deleteValue("email");
-                    LocalStorageHelper.deleteValue("password");
-                  }
-                  print(email);
-                  print(password);
+                  // if (rememberMe == true) {
+                  //   LocalStorageHelper.setValue("email", email);
+                  //   LocalStorageHelper.setValue("password", password);
+                  // } else {
+                  //   LocalStorageHelper.deleteValue("email");
+                  //   LocalStorageHelper.deleteValue("password");
+                  // }
+                  // print(email);
+                  // print(password);
                   Loading.show(context);
                   handleSignIn();
                 },

@@ -31,12 +31,12 @@ class ButtonWidgetState extends State<ButtonWidget>
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: (widget.ontap),
-      onTapDown: (TapDownDetails details) {
-        _controller.forward();
-        Future.delayed(const Duration(milliseconds: 200), () {
-          _controller.reverse();
-        });
-      },
+      // onTapDown: (TapDownDetails details) {
+      //   _controller.forward();
+      //   Future.delayed(const Duration(milliseconds: 200), () {
+      //     _controller.reverse();
+      //   });
+      // },
       child: ScaleTransition(
         scale: Tween<double>(
           begin: 1.0,

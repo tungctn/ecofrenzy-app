@@ -4,6 +4,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:flutter_app/core/utils/toast_utils.dart';
 import 'package:flutter_app/provider/actions/auth.action.dart';
 import 'package:flutter_app/provider/notifiers/auth.notifier.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
@@ -42,11 +43,21 @@ class _SignUpScreenState extends State<SignUpScreen> {
   String name = "";
   final authNotifier = AuthNotifier();
 
-  void handleRegister() async {
-    await AuthActions.register(authNotifier, name, email, password);
-    // ignore: use_build_context_synchronously
-    Navigator.push(
-        context, MaterialPageRoute(builder: (context) => const SignInScreen()));
+  void handleRegister(context) async {
+    FocusScope.of(context).requestFocus(new FocusNode());
+    Loading.show(context);
+    Map<String, dynamic> jsonResponse =
+        await AuthActions.register(authNotifier, name, email, password);
+    Loading.dismiss(context);
+
+    if (jsonResponse["errors"]) {
+      ToastUtils.showToast(
+          context, "Email already exists in the system", TypeToast.error);
+    } else {
+      ToastUtils.showToast(context, "Register success", TypeToast.success);
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => const SignInScreen()));
+    }
   }
 
   @override
@@ -104,95 +115,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
             ButtonWidget(
               title: "Sign Up",
               ontap: () {
-                handleRegister();
-                // Loading.show(context);
-                //   _controller
-                //       ?.signByPassWord(email, password, passwordConfirmation)
-                //       .then((value) => {
-                //             Loading.dismiss(context),
-                //             if (value['success'] == true)
-                //               {
-                //                 AwesomeDialog(
-                //                   context: context,
-                //                   dialogType: DialogType.success,
-                //                   animType: AnimType.topSlide,
-                //                   title: LocalizationText.signUpSuccess,
-                //                   desc: value['message'],
-                //                   btnOkOnPress: () {
-                //                     Navigator.popAndPushNamed(
-                //                         context, SignInScreen.routeName);
-                //                   },
-                //                 ).show()
-                //               }
-                //             else if (value['result'] == 'false')
-                //               {
-                //                 Loading.dismiss(context),
-                //                 AwesomeDialog(
-                //                   context: context,
-                //                   dialogType: DialogType.warning,
-                //                   animType: AnimType.topSlide,
-                //                   title: LocalizationText.errPassOrEmail,
-                //                   desc: value['data']['email'] != null
-                //                       ? '${LocalizationText.email}: ${value['data']['email']}'
-                //                       : value['data']['password'] != null
-                //                           ? '${value['data']['password']}'
-                //                           : "",
-                //                   btnOkOnPress: () {},
-                //                 ).show(),
-                //                 // showDialog(
-                //                 //   context: context,
-                //                 //   builder: (BuildContext context) => AlertDialog(
-                //                 //     title: Text(LocalizationText.errPassOrEmail),
-                //                 //     content: Container(
-                //                 //       height: 120.0,
-                //                 //       color: Colors.yellow,
-                //                 //       child: Column(
-                //                 //         crossAxisAlignment:
-                //                 //             CrossAxisAlignment.start,
-                //                 //         children: [
-                //                 //           value['data']['email'] != null
-                //                 //               ? Text(
-                //                 //                   '${LocalizationText.email}: ${value['data']['email']}')
-                //                 //               : SizedBox(
-                //                 //                   height: kDefaultPadding,
-                //                 //                 ),
-                //                 //           value['data']['email'] != null
-                //                 //               ? Text(
-                //                 //                   '${LocalizationText.password}: ${value['data']['password']}')
-                //                 //               : SizedBox(
-                //                 //                   height: 0,
-                //                 //                 )
-                //                 //         ],
-                //                 //       ),
-                //                 //     ),
-                //                 //     actions: <Widget>[
-                //                 //       TextButton(
-                //                 //         onPressed: () => Navigator.pop(
-                //                 //             context, LocalizationText.cancel),
-                //                 //         child: Text(LocalizationText.ok),
-                //                 //       ),
-                //                 //       TextButton(
-                //                 //         onPressed: () => Navigator.pop(
-                //                 //             context, LocalizationText.ok),
-                //                 //         child: Text(LocalizationText.ok),
-                //                 //       ),
-                //                 //     ],
-                //                 //   ),
-                //                 // )
-                //               }
-                //             else
-                //               {
-                //                 Loading.dismiss(context),
-                //                 AwesomeDialog(
-                //                   context: context,
-                //                   dialogType: DialogType.warning,
-                //                   animType: AnimType.topSlide,
-                //                   title: LocalizationText.nullResponse,
-                //                   desc: value['message'],
-                //                   btnOkOnPress: () {},
-                //                 ).show()
-                //               },
-                //           });
+                handleRegister(context);
               },
             ),
             const SizedBox(
