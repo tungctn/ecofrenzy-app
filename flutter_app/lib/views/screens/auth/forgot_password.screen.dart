@@ -24,95 +24,99 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return AppBarContainer(
-      titleString: "Forgot password",
-      // ignore: prefer_const_literals_to_create_immutables
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      body: Stack(children: [
+        Container(
+          child: Image.asset(
+            'assets/images/background_color.png',
+            fit: BoxFit.cover,
+          ),
+          width: double.infinity,
+          height: double.infinity,
+        ),
+        SingleChildScrollView(
+            child: Column(children: [
           Image.asset(
-            'assets/images/logo.jpg', // Đường dẫn đúng đến tệp hình ảnh trong thư mục assets
+            'assets/images/auth_background.png', // Đường dẫn đúng đến tệp hình ảnh trong thư mục assets
             fit: BoxFit.cover,
           ),
           const SizedBox(
-            height: kDefaultPadding * 5,
+            height: 40,
           ),
-          StatefulBuilder(
-            builder: (context, setState) => InputCard(
-              style: TypeInputCard.email,
-              onchange: (String value) {
-                email = value;
-                setState(() {});
-              },
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 20),
+            child: Column(
+              children: [
+                Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Forgot password',
+                    style: TextStyle(
+                      color: Color(0xFF2B2945),
+                      fontSize: 24,
+                      fontWeight: FontWeight.w900,
+                      height: 0,
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                StatefulBuilder(
+                  builder: (context, setState) => InputCard(
+                    style: TypeInputCard.email,
+                    onchange: (String value) {
+                      email = value;
+                      setState(() {});
+                    },
+                  ),
+                ),
+                const SizedBox(height: kDefaultPadding),
+                ButtonWidget(
+                  title: 'Send',
+                  ontap: () {},
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Row(
+                      children: [
+                        Text(
+                          "Remember your account ",
+                          style: TextStyles.defaultStyle.blackTextColor
+                              .setTextSize(kDefaultTextSize),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) =>
+                                        const SignInScreen()));
+                          },
+                          child: SizedBox(
+                            height: 26,
+                            child: Text(
+                              "Sign In",
+                              style: TextStyles.defaultStyle.bold
+                                  .setColor(Color.fromARGB(255, 255, 255, 255))
+                                  .setTextSize(20),
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                  ],
+                ),
+              ],
             ),
-          ),
-          const SizedBox(height: kDefaultPadding),
-          ButtonWidget(
-            title: 'Send',
-            ontap: () {
-              Loading.show(context);
-              // LoginManager().forgotPassword(email).then((value) => {
-              //       debugPrint("value forgot password $value"),
-              //       Loading.dismiss(context),
-              //       if (value == true)
-              //         {
-              //           Loading.dismiss(context),
-              //           // showDialog(
-              //           //     context: context,
-              //           //     builder: (BuildContext context) {
-              //           //       return VerificationCode(email: email);
-              //           //     }),
-              //         }
-              //       else if (value == 500)
-              //         {
-              //           Loading.dismiss(context),
-              //           showDialog(
-              //             context: context,
-              //             builder: (BuildContext context) => AlertDialog(
-              //               title: const Text('YOU MUST ENTER YOUR EMAIL'),
-              //               content: const Text(''),
-              //               actions: <Widget>[
-              //                 TextButton(
-              //                   onPressed: () =>
-              //                       Navigator.pop(context, 'Cancel'),
-              //                   child: const Text('Cancel'),
-              //                 ),
-              //                 TextButton(
-              //                   onPressed: () => Navigator.pop(context, 'OK'),
-              //                   child: const Text('OK'),
-              //                 ),
-              //               ],
-              //             ),
-              //           )
-              //         }
-              //       else if (value == 400 || value == 404)
-              //         {
-              //           Loading.dismiss(context),
-              //           showDialog(
-              //             context: context,
-              //             builder: (BuildContext context) => AlertDialog(
-              //               title: const Text('No user found with this email'),
-              //               content: const Text(''),
-              //               actions: <Widget>[
-              //                 TextButton(
-              //                   onPressed: () =>
-              //                       Navigator.pop(context, 'Cancel'),
-              //                   child: const Text('Cancel'),
-              //                 ),
-              //                 TextButton(
-              //                   onPressed: () => Navigator.pop(context, 'OK'),
-              //                   child: const Text('OK'),
-              //                 ),
-              //               ],
-              //             ),
-              //           )
-              //         },
-              //       Loading.dismiss(context)
-              //     });
-            },
           )
-        ],
-      ),
+        ]))
+      ]),
     );
   }
 }

@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../utils/constants.dart';
 
 class AuthService {
-  Future<dynamic> login(String email, String password) async {
+  Future<Map<String, dynamic>> login(String email, String password) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final response = await http.post(
       Uri.parse('$api/auth/login'),
@@ -21,14 +21,18 @@ class AuthService {
       // prefs.setString("token", jsonResponse["token"]);
       prefs.setString("userId", jsonResponse["user"]["_id"]);
       print(jsonResponse["user"]);
-      return jsonResponse["user"];
+      jsonResponse["errors"] = false;
+      return jsonResponse;
     } else {
       // throw Exception('Failed to login.');
       print(jsonResponse["message"]);
+      jsonResponse["errors"] = true;
+      return jsonResponse;
     }
   }
 
-  Future<dynamic> register(String name, String email, String password) async {
+  Future<Map<String, dynamic>> register(
+      String name, String email, String password) async {
     final response = await http.post(
       Uri.parse('$api/auth/register'),
       headers: <String, String>{
@@ -40,9 +44,12 @@ class AuthService {
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
       print(jsonResponse["user"]);
+      jsonResponse["errors"] = false;
       return jsonResponse;
     } else {
-      throw Exception('Failed to register.');
+      final Map<String, dynamic> jsonResponse = json.decode(response.body);
+      jsonResponse["errors"] = true;
+      return jsonResponse;
     }
   }
 

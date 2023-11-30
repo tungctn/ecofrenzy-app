@@ -37,11 +37,13 @@ class InputCard extends StatefulWidget {
 class _InputCardState extends State<InputCard> {
   dynamic value;
   late final TextEditingController? _textController;
+  late FocusNode focusNode;
 
   @override
   void initState() {
     super.initState();
     _textController = TextEditingController();
+    focusNode = new FocusNode();
   }
 
   @override
@@ -50,7 +52,7 @@ class _InputCardState extends State<InputCard> {
     if (widget.value != null) {
       _textController?.text = widget.value ?? "";
     }
-    bool showPassword = false;
+    bool showPassword = true;
 
     Widget widgetToDisplay;
 
@@ -60,6 +62,7 @@ class _InputCardState extends State<InputCard> {
 
       case TypeInputCard.firstName:
         widgetToDisplay = TextField(
+          focusNode: focusNode,
           controller: _textController,
           decoration: InputDecoration(
             labelText: "First name",
@@ -77,6 +80,7 @@ class _InputCardState extends State<InputCard> {
         break;
       case TypeInputCard.name:
         widgetToDisplay = TextField(
+          focusNode: focusNode,
           controller: _textController,
           decoration: InputDecoration(
             labelText: "Name",
@@ -94,9 +98,10 @@ class _InputCardState extends State<InputCard> {
         break;
       case TypeInputCard.email:
         widgetToDisplay = TextField(
+          focusNode: focusNode,
           controller: _textController,
           decoration: InputDecoration(
-            labelText: "Email",
+            labelText: "User name",
             border: InputBorder.none,
             labelStyle: TextStyles.defaultStyle.blackTextColor.light
                 .setTextSize(kDefaultTextSize / 1.1),
@@ -112,6 +117,7 @@ class _InputCardState extends State<InputCard> {
 
       case TypeInputCard.lastName:
         widgetToDisplay = TextField(
+          focusNode: focusNode,
           controller: _textController,
           decoration: InputDecoration(
             labelText: "Last name",
@@ -129,6 +135,7 @@ class _InputCardState extends State<InputCard> {
         break;
       case TypeInputCard.phoneNumber:
         widgetToDisplay = TextField(
+          focusNode: focusNode,
           controller: _textController,
           decoration: InputDecoration(
             labelText: "Phone number",
@@ -146,6 +153,7 @@ class _InputCardState extends State<InputCard> {
         break;
       case TypeInputCard.dateOfBirth:
         widgetToDisplay = TextField(
+          focusNode: focusNode,
           controller: _textController,
           decoration: InputDecoration(
             labelText: "Date of birth",
@@ -164,6 +172,7 @@ class _InputCardState extends State<InputCard> {
       case TypeInputCard.password:
         widgetToDisplay = StatefulBuilder(builder: (context, setState) {
           return TextField(
+            focusNode: focusNode,
             controller: _textController,
             decoration: InputDecoration(
               labelText: "Password",
@@ -193,6 +202,7 @@ class _InputCardState extends State<InputCard> {
       case TypeInputCard.passwordConfirm:
         widgetToDisplay = StatefulBuilder(builder: (context, setState) {
           return TextField(
+            focusNode: focusNode,
             controller: _textController,
             decoration: InputDecoration(
               labelText: "Password confirm",
@@ -222,6 +232,7 @@ class _InputCardState extends State<InputCard> {
 
       case TypeInputCard.verificationCode:
         widgetToDisplay = TextField(
+          focusNode: focusNode,
           keyboardType: TextInputType.number,
           controller: _textController,
           decoration: InputDecoration(

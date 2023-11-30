@@ -31,12 +31,12 @@ class ButtonWidgetState extends State<ButtonWidget>
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: (widget.ontap),
-      onTapDown: (TapDownDetails details) {
-        _controller.forward();
-        Future.delayed(const Duration(milliseconds: 200), () {
-          _controller.reverse();
-        });
-      },
+      // onTapDown: (TapDownDetails details) {
+      //   _controller.forward();
+      //   Future.delayed(const Duration(milliseconds: 200), () {
+      //     _controller.reverse();
+      //   });
+      // },
       child: ScaleTransition(
         scale: Tween<double>(
           begin: 1.0,
@@ -46,9 +46,7 @@ class ButtonWidgetState extends State<ButtonWidget>
             padding: const EdgeInsets.all(kDefaultPadding),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(kMediumPadding),
-              gradient: widget.title != "Reset"
-                  ? Gradients.defaultGradientBackground
-                  : Gradients.defaultBackGroundButton,
+              color: Color(0xFF7367F0),
             ),
             alignment: Alignment.center,
             child: Text(widget.title,

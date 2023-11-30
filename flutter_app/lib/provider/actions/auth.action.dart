@@ -3,24 +3,32 @@ import 'package:flutter_app/services/auth.service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthActions {
-  static Future<void> login(
+  static Future<Map<String, dynamic>> login(
       AuthNotifier notifier, String email, String password) async {
     try {
-      Map<String, dynamic> user = await AuthService().login(email, password);
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString("userId", user["_id"]);
-      notifier.setUser(user);
-      notifier.isLogged = true;
+      Map<String, dynamic> response =
+          await AuthService().login(email, password);
+
+      if (response["errors"]) {
+        return response;
+      } else {
+        Map<String, dynamic> user = response["user"];
+        SharedPreferences prefs = await SharedPreferences.getInstance();
+        prefs.setString("userId", user["_id"]);
+        notifier.setUser(user);
+        notifier.isLogged = true;
+        return response;
+      }
     } catch (error) {
       rethrow;
     }
   }
 
-  static Future<void> register(
+  static Future<Map<String, dynamic>> register(
       AuthNotifier notifier, String name, String email, String password) async {
     try {
       // Map<String, dynamic> user =
-      await AuthService().register(name, email, password);
+      return await AuthService().register(name, email, password);
       // notifier.setUser(user);
       // notifier.isLogged = true;
     } catch (error) {
