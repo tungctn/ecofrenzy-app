@@ -46,9 +46,7 @@ class ButtonWidgetState extends State<ButtonWidget>
             padding: const EdgeInsets.all(kDefaultPadding),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(kMediumPadding),
-              gradient: widget.title != "Reset"
-                  ? Gradients.defaultGradientBackground
-                  : Gradients.defaultBackGroundButton,
+              color: Color(0xFF7367F0),
             ),
             alignment: Alignment.center,
             child: Text(widget.title,

@@ -21,10 +21,6 @@ import 'package:flutter_app/views/components/shared/line_widget.dart';
 import 'package:flutter_app/utils/icon.dart';
 import 'package:provider/provider.dart';
 
-/*
-...
-...Đã làm chuyển ngữ
-*/
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
 
@@ -62,162 +58,133 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return AppBarContainer(
-      titleString: "Sign Up",
-      // ignore: prefer_const_literals_to_create_immutables
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Image.asset(
-              'assets/images/logo.jpg', // Đường dẫn đúng đến tệp hình ảnh trong thư mục assets
-              fit: BoxFit.cover,
-            ),
-            const SizedBox(
-              height: kDefaultPadding * 2,
-            ),
-            StatefulBuilder(
-              builder: (context, setState) => InputCard(
-                style: TypeInputCard.name,
-                onchange: (String value) {
-                  name = value;
-                  setState(() {});
-                },
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
+      body: Stack(children: [
+        Container(
+          child: Image.asset(
+            'assets/images/background_color.png',
+            fit: BoxFit.cover,
+          ),
+          width: double.infinity,
+          height: double.infinity,
+        ),
+        SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Image.asset(
+                'assets/images/auth_background.png', // Đường dẫn đúng đến tệp hình ảnh trong thư mục assets
+                fit: BoxFit.cover,
               ),
-            ),
-            const SizedBox(
-              height: kDefaultPadding * 2,
-            ),
-            StatefulBuilder(
-              builder: (context, setState) => InputCard(
-                style: TypeInputCard.email,
-                onchange: (String value) {
-                  email = value;
-                  setState(() {});
-                },
+              const SizedBox(
+                height: 40,
               ),
-            ),
-            const SizedBox(
-              height: kDefaultPadding * 2,
-            ),
-            StatefulBuilder(
-              builder: (context, setState) => InputCard(
-                style: TypeInputCard.password,
-                onchange: (String value) {
-                  password = value;
-                  setState(() {});
-                },
-              ),
-            ),
-            const SizedBox(
-              height: kDefaultPadding * 2,
-            ),
-            ButtonWidget(
-              title: "Sign Up",
-              ontap: () {
-                handleRegister(context);
-              },
-            ),
-            const SizedBox(
-              height: kDefaultPadding,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Line(
-                  width: 90,
-                ),
-                const SizedBox(
-                  width: kDefaultPadding / 2,
-                ),
-                Text(
-                  "Option sign up",
-                  style: TextStyles.defaultStyle.blackTextColor
-                      .setTextSize(kDefaultTextSize / 1.1),
-                ),
-                const SizedBox(
-                  width: kDefaultPadding / 2,
-                ),
-                const Line(
-                  width: 90,
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: kDefaultPadding,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              // ignore: prefer_const_literals_to_create_immutables
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: ButtonIconWidget(
-                    title: 'Google',
-                    backgroundColor: ColorPalette.cardBackgroundColor,
-                    textColor: ColorPalette.blackTextColor,
-                    icon: const Icon(
-                      FontAwesomeIcons.google,
-                      color: ColorPalette.primaryColor,
-                      size: kDefaultTextSize,
-                    ),
-                    ontap: () {},
-                  ),
-                ),
-                const SizedBox(width: kDefaultPadding / 2),
-                Expanded(
-                  flex: 1,
-                  child: ButtonIconWidget(
-                    title: 'Facebook',
-                    backgroundColor: const Color(0xff3C5A9A),
-                    textColor: const Color(0xffffffff),
-                    icon: const Icon(
-                      FontAwesomeIcons.facebookF,
-                      color: Colors.white,
-                    ),
-                    ontap: () {},
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: kDefaultPadding,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Row(
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 20),
+                child: Column(
                   children: [
-                    Text(
-                      "You have account ",
-                      style: TextStyles.defaultStyle.blackTextColor
-                          .setTextSize(kDefaultTextSize),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        // Navigator.pushNamed(context, SignUpScreen.routeName);
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const SignInScreen()));
-                      },
-                      child: SizedBox(
-                        height: 20,
-                        child: Text(
-                          "Sign In",
-                          style: TextStyles.defaultStyle.primaryTextColor.bold
-                              .setTextSize(kDefaultTextSize),
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Sign Up',
+                        style: TextStyle(
+                          color: Color(0xFF2B2945),
+                          fontSize: 24,
+                          fontWeight: FontWeight.w900,
+                          height: 0,
                         ),
                       ),
-                    )
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    StatefulBuilder(
+                      builder: (context, setState) => InputCard(
+                        style: TypeInputCard.name,
+                        onchange: (String value) {
+                          name = value;
+                          setState(() {});
+                        },
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    StatefulBuilder(
+                      builder: (context, setState) => InputCard(
+                        style: TypeInputCard.email,
+                        onchange: (String value) {
+                          email = value;
+                          setState(() {});
+                        },
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    StatefulBuilder(
+                      builder: (context, setState) => InputCard(
+                        style: TypeInputCard.password,
+                        onchange: (String value) {
+                          password = value;
+                          setState(() {});
+                        },
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    ButtonWidget(
+                      title: "Sign Up",
+                      ontap: () {
+                        handleRegister(context);
+                      },
+                    ),
+                    const SizedBox(
+                      height: kDefaultPadding,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              "You have account ",
+                              style: TextStyles.defaultStyle.blackTextColor
+                                  .setTextSize(kDefaultTextSize),
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                // Navigator.pushNamed(context, SignUpScreen.routeName);
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            const SignInScreen()));
+                              },
+                              child: SizedBox(
+                                height: 26,
+                                child: Text(
+                                  "Sign In",
+                                  style: TextStyles.defaultStyle.bold
+                                      .setColor(
+                                          Color.fromARGB(255, 255, 255, 255))
+                                      .setTextSize(20),
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ],
+                    ),
                   ],
                 ),
-              ],
-            ),
-          ],
+              )
+            ],
+          ),
         ),
-      ),
+      ]),
     );
   }
 }

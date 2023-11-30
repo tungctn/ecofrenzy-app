@@ -101,7 +101,7 @@ class _InputCardState extends State<InputCard> {
           focusNode: focusNode,
           controller: _textController,
           decoration: InputDecoration(
-            labelText: "Email",
+            labelText: "User name",
             border: InputBorder.none,
             labelStyle: TextStyles.defaultStyle.blackTextColor.light
                 .setTextSize(kDefaultTextSize / 1.1),
