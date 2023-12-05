@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/core/constants/color_palatte.dart';
 import 'package:flutter_app/models/challenge.dart';
 import 'package:flutter_app/provider/actions/challenge.action.dart';
 import 'package:flutter_app/provider/notifiers/challenge.notifier.dart';
@@ -19,6 +20,67 @@ class ChallengeCard extends StatefulWidget {
 class ChallengeCardState extends State<ChallengeCard> {
   Challenge get challenge => widget.challenge;
   bool isExpanded = false;
+  bool isShare = false;
+  List<String> friends = [
+    "The Anh",
+    "Tung",
+    "Ngoc",
+    "Ruou",
+    "Tao",
+    "Meo",
+    "Ngon"
+  ];
+  List<String> friendsSelected = [];
+
+  Widget buildListFriend() {
+    return ListView(
+      children: List.generate(
+          friends.length,
+          (index) => Container(
+                height: 52,
+                child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      Container(
+                        width: 38,
+                        height: 38,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(50)),
+                          image: DecorationImage(
+                            image: NetworkImage(
+                                "https://cdn.sforum.vn/sforum/wp-content/uploads/2023/08/hinh-nen-meo-9.jpg"),
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 12,
+                      ),
+                      Expanded(
+                        child: Text(
+                          friends[index],
+                          style: TextStyle(
+                              fontWeight: FontWeight.w900, fontSize: 16),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 12,
+                      ),
+                      Checkbox(
+                          value: friendsSelected.contains(friends[index]),
+                          onChanged: (bool? value) {
+                            setState(() {
+                              if (value == true) {
+                                friendsSelected.add(friends[index]);
+                              } else {
+                                friendsSelected.remove(friends[index]);
+                              }
+                            });
+                          })
+                    ]),
+              )),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -38,8 +100,7 @@ class ChallengeCardState extends State<ChallengeCard> {
                     Row(children: [
                       Expanded(
                         child: Container(
-                            padding: const EdgeInsets.only(
-                                left: 10, right: 20, top: 20),
+                            padding: const EdgeInsets.only(top: 20),
                             decoration: BoxDecoration(
                               borderRadius: const BorderRadius.vertical(
                                 top: Radius.circular(15),
@@ -103,7 +164,7 @@ class ChallengeCardState extends State<ChallengeCard> {
                                   ),
                                 ]),
                                 const SizedBox(height: 20),
-                                if (isExpanded)
+                                if (isExpanded && !isShare)
                                   Column(
                                     children: [
                                       SizedBox(
@@ -124,6 +185,66 @@ class ChallengeCardState extends State<ChallengeCard> {
                                       ),
                                     ],
                                   )
+                                else if (isExpanded && isShare)
+                                  Column(
+                                    children: [
+                                      const SizedBox(height: 5),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Expanded(
+                                            child: Container(
+                                                padding: EdgeInsets.symmetric(
+                                                    horizontal: 14),
+                                                decoration: BoxDecoration(
+                                                  color: getGradientColor(
+                                                      challenge)[2],
+                                                ),
+                                                child: Column(
+                                                  children: [
+                                                    Container(
+                                                      height: 32,
+                                                      padding:
+                                                          EdgeInsets.symmetric(
+                                                              horizontal: 12),
+                                                      margin:
+                                                          EdgeInsets.symmetric(
+                                                              vertical: 12),
+                                                      decoration: BoxDecoration(
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(12),
+                                                        color: Colors.white,
+                                                      ),
+                                                      child: TextField(
+                                                        style: TextStyle(
+                                                            fontSize: 13),
+                                                        decoration: InputDecoration(
+                                                            hintText: 'Search',
+                                                            hintStyle: TextStyle(
+                                                                color: Colors
+                                                                    .black
+                                                                    .withOpacity(
+                                                                        0.6000000238418579))),
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                        height: 320,
+                                                        child:
+                                                            buildListFriend())
+                                                  ],
+                                                )),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(
+                                          height: 2,
+                                          width: double.infinity,
+                                          child:
+                                              Container(color: Colors.white)),
+                                    ],
+                                  )
                               ],
                             )),
                       ),
@@ -141,45 +262,101 @@ class ChallengeCardState extends State<ChallengeCard> {
                             padding: const EdgeInsets.all(8.0),
                             alignment: Alignment.centerRight,
                             child: isExpanded
-                                ? Row(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Expanded(
-                                        child: TextButton.icon(
-                                          onPressed: () {
-                                            setState(() {
-                                              isExpanded = !isExpanded;
-                                            });
-                                          },
-                                          icon: cancelIcon,
-                                          label: const Text(""),
-                                        ),
-                                      ),
-                                      Expanded(
-                                          child: FittedBox(
-                                        child: TextButton.icon(
-                                          onPressed: () {
-                                            ChallengeActions.pickChallenge(
-                                                context
-                                                    .read<ChallengeNotifier>(),
-                                                challenge.id);
-                                            setState(() {
-                                              isExpanded = !isExpanded;
-                                            });
-                                          },
-                                          icon: likeIcon,
-                                          label: const Text(""),
-                                        ),
-                                      )),
-                                      Expanded(
-                                        child: TextButton.icon(
-                                          onPressed: () {},
-                                          icon: shareIcon,
-                                          label: const Text(""),
-                                        ),
-                                      ),
-                                    ],
-                                  )
+                                ? (isShare
+                                    ? Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Expanded(
+                                            child: TextButton(
+                                              style: ButtonStyle(
+                                                  backgroundColor:
+                                                      MaterialStateProperty.all<
+                                                          Color>(Colors.red)),
+                                              onPressed: () {
+                                                setState(() {
+                                                  isShare = false;
+                                                });
+                                              },
+                                              child: const Text(
+                                                "Cancel",
+                                                style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontWeight:
+                                                        FontWeight.w900),
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(
+                                            width: 5,
+                                          ),
+                                          Expanded(
+                                            child: TextButton(
+                                              style: ButtonStyle(
+                                                  backgroundColor:
+                                                      MaterialStateProperty.all<
+                                                              Color>(
+                                                          ColorPalette
+                                                              .buttonColor)),
+                                              onPressed: () {
+                                                setState(() {
+                                                  isShare = false;
+                                                });
+                                              },
+                                              child: const Text("Challenge",
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.w900)),
+                                            ),
+                                          )
+                                        ],
+                                      )
+                                    : Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          Expanded(
+                                            child: TextButton.icon(
+                                              onPressed: () {
+                                                setState(() {
+                                                  isExpanded = !isExpanded;
+                                                  isShare = false;
+                                                });
+                                              },
+                                              icon: cancelIcon,
+                                              label: const Text(""),
+                                            ),
+                                          ),
+                                          Expanded(
+                                              child: FittedBox(
+                                            child: TextButton.icon(
+                                              onPressed: () {
+                                                ChallengeActions.pickChallenge(
+                                                    context.read<
+                                                        ChallengeNotifier>(),
+                                                    challenge.id);
+                                                setState(() {
+                                                  isExpanded = true;
+                                                });
+                                              },
+                                              icon: likeIcon,
+                                              label: const Text(""),
+                                            ),
+                                          )),
+                                          Expanded(
+                                            child: TextButton.icon(
+                                              onPressed: () {
+                                                setState(() {
+                                                  isShare = true;
+                                                });
+                                              },
+                                              icon: shareIcon,
+                                              label: const Text(""),
+                                            ),
+                                          ),
+                                        ],
+                                      ))
                                 : InkWell(
                                     onTap: () {
                                       setState(() {
