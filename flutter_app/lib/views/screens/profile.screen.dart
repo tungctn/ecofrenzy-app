@@ -208,7 +208,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                                   top: 70, left: 20, right: 20),
                               padding:
                                   const EdgeInsets.only(left: 20, right: 20),
-                              width: 352,
+                              width: double.infinity,
                               height: 250,
                               decoration: ShapeDecoration(
                                 color: Colors.white,

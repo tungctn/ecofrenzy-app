@@ -46,7 +46,7 @@ class ButtonWidgetState extends State<ButtonWidget>
             padding: const EdgeInsets.all(kDefaultPadding),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(kMediumPadding),
-              color: Color(0xFF7367F0),
+              color: ColorPalette.buttonColor,
             ),
             alignment: Alignment.center,
             child: Text(widget.title,

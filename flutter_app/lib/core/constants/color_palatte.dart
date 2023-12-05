@@ -22,6 +22,8 @@ class ColorPalette {
   static const Color purpleDark = Color(0XFF0d193e);
   static const Color orange = Color(0XFFec8d2f);
   static const Color red = Color(0XFFf44336);
+
+  static const Color buttonColor = Color(0xFF7367F0);
 }
 
 class Gradients {
