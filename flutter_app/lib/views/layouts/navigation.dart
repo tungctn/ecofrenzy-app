@@ -15,6 +15,7 @@ import 'package:flutter_app/views/screens/auth/sign_in.screen.dart';
 import 'package:flutter_app/views/screens/auth/sign_up.screen.dart';
 import 'package:flutter_app/views/screens/auth/forgot_password.screen.dart';
 import 'package:flutter_app/views/screens/profile.screen.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
 class Navigation extends StatefulWidget {
@@ -181,7 +182,7 @@ class NavigationState extends State<Navigation> {
       icon: SizedBox(
         height: 30,
         width: 30,
-        child: _selectedIndex == 0 ? incentivesIconSelect : incentivesIcon,
+        child: Icon(FontAwesomeIcons.ticket),
       ),
       label: 'Challenge',
     ));
@@ -190,7 +191,7 @@ class NavigationState extends State<Navigation> {
       icon: SizedBox(
         height: 30,
         width: 30,
-        child: _selectedIndex == 1 ? feedIconSelect : feedIcon,
+        child: Icon(FontAwesomeIcons.compass),
       ),
       label: 'Feed',
     ));
@@ -238,23 +239,14 @@ class NavigationState extends State<Navigation> {
     // }
 
     items.add(BottomNavigationBarItem(
-      icon: SizedBox(
-        height: 30,
-        width: 30,
-        child: _selectedIndex == (isPicked ? 3 : 2)
-            ? leaderboardIconSelect
-            : leaderboardIcon,
-      ),
+      icon:
+          SizedBox(height: 30, width: 30, child: Icon(FontAwesomeIcons.trophy)),
       label: 'Leaderboard',
     ));
 
     items.add(BottomNavigationBarItem(
       icon: SizedBox(
-        height: 30,
-        width: 30,
-        child:
-            _selectedIndex == (isPicked ? 4 : 3) ? learnIconSelect : learnIcon,
-      ),
+          height: 30, width: 30, child: Icon(FontAwesomeIcons.userGroup)),
       label: 'Friends',
     ));
 
