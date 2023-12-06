@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/provider/actions/auth.action.dart';
 import 'package:flutter_app/provider/actions/post.action.dart';
+import 'package:flutter_app/provider/notifiers/auth.notifier.dart';
 import 'package:flutter_app/provider/notifiers/post.notifier.dart';
+import 'package:flutter_app/services/post.service.dart';
 import 'package:flutter_app/utils/color.dart';
 import 'package:flutter_app/utils/icon.dart';
 import 'package:flutter_app/views/components/shared/loading.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/intl.dart';
 
 class FeedScreen extends StatefulWidget {
   static const String routeName = '/feed';
@@ -17,6 +21,10 @@ class FeedScreen extends StatefulWidget {
 
 class FeedScreenState extends State<FeedScreen> {
   bool _isLoading = false;
+  final postNotifier = PostNotifier();
+  TextEditingController commentController = TextEditingController();
+  final authNotifier = AuthNotifier();
+
   @override
   void initState() {
     super.initState();
@@ -27,12 +35,148 @@ class FeedScreenState extends State<FeedScreen> {
   }
 
   void loadFeed() async {
-    await PostActions.fetchChallenges(context.read<PostNotifier>());
+    await AuthActions.checkAuth(context.read<AuthNotifier>());
+    await PostActions.fetchPost(context.read<PostNotifier>());
     if (mounted) {
+      // dynamic listLikes = postNotifier.posts.map((e) => e,)
       setState(() {
         _isLoading = false;
       });
     }
+  }
+
+  void addComment(String comment) async {}
+
+  String formatDay(DateTime createdAt) {
+    final now = DateTime.now();
+    final today = DateTime(now.year, now.month, now.day);
+    final yesterday = DateTime(now.year, now.month, now.day - 1);
+    final aDate = DateTime(createdAt.year, createdAt.month, createdAt.day);
+
+    if (aDate == today) {
+      return 'Today';
+    } else if (aDate == yesterday) {
+      return 'Yesterday';
+    } else {
+      final daysDifference = now.difference(createdAt).inDays;
+      return '$daysDifference days ago';
+    }
+  }
+
+  void _showCommentsSheet(comments, postId) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        final List listComment = comments;
+        return Consumer<AuthNotifier>(
+          builder: (context, notifier, _) {
+            return Container(
+              height: MediaQuery.of(context).size.height - 20,
+              padding: const EdgeInsets.only(top: 16),
+              child: Column(
+                children: [
+                  const Text(
+                    'Comments',
+                    style: TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                        fontFamily: "Ridley Grotesk Bold"),
+                  ),
+                  const SizedBox(height: 10),
+                  Expanded(
+                    child: ListView.builder(
+                      itemCount: listComment.length,
+                      itemBuilder: (context, index) {
+                        final comment = listComment[index];
+                        return ListTile(
+                            subtitle: Row(
+                          children: [
+                            SizedBox(
+                              width: 50,
+                              height: 50,
+                              child: Image.network(
+                                comment['user']['image'],
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            const SizedBox(width: 5),
+                            Expanded(
+                                child: Container(
+                                    padding: const EdgeInsets.all(3),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                      color: const Color(0xffDCDCDC),
+                                    ),
+                                    child: ListTile(
+                                      title: Text(
+                                        comment['user']['name'],
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w900,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      subtitle: Text(
+                                        comment['content'],
+                                        style: const TextStyle(
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                    )))
+                          ],
+                        ));
+                      },
+                    ),
+                  ),
+                  const Divider(),
+                  Padding(
+                    padding: MediaQuery.of(context).viewInsets,
+                    child: Row(
+                      children: [
+                        Expanded(
+                            child: Container(
+                          padding: const EdgeInsets.all(10),
+                          child: TextField(
+                              style: const TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 16,
+                                  fontFamily: "Ridley Grotesk Regular"),
+                              controller: commentController,
+                              decoration: const InputDecoration(
+                                hintText: 'Add a comment...',
+                                border: InputBorder.none,
+                              )),
+                        )),
+                        IconButton(
+                          icon: const Icon(Icons.send),
+                          onPressed: () {
+                            print(commentController.text);
+                            listComment.add({
+                              'user': {
+                                'name': notifier.user['name'],
+                                'image': notifier.user['image'],
+                              },
+                              'content': commentController.text
+                            });
+                            PostActions.commentPost(
+                                PostNotifier(), postId, commentController.text);
+                            FocusScope.of(context).unfocus();
+                            commentController.clear();
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      },
+    );
   }
 
   @override
@@ -47,6 +191,14 @@ class FeedScreenState extends State<FeedScreen> {
           itemCount: notifier.posts.length,
           itemBuilder: (context, index) {
             final post = notifier.posts[index];
+            // bool isLiked =
+            //     post['likes'].contains(post['user']['id']) ? true : false;
+            // post["isLiked"] = isLiked;
+            DateTime createdAt = DateTime.parse(post['createdAt']);
+            String formattedDate = DateFormat('kk:mm').format(createdAt);
+
+            // formattedDay is yesterday or today or 2 days ago and so on
+            String formattedDay = formatDay(createdAt);
             return Container(
                 margin: const EdgeInsets.only(left: 5, right: 5, top: 20),
                 // padding: const EdgeInsets.all(3),
@@ -63,54 +215,52 @@ class FeedScreenState extends State<FeedScreen> {
                 child: Stack(
                   children: [
                     ListTile(
-                        title: Container(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Row(
-                                children: [
-                                  SizedBox(
-                                    width: 50,
-                                    height: 50,
-                                    child: Image.asset(
-                                      "assets/images/avatar.png",
-                                      fit: BoxFit.cover,
-                                    ),
+                        title: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                SizedBox(
+                                  width: 50,
+                                  height: 50,
+                                  child: Image.asset(
+                                    "assets/images/avatar.png",
+                                    fit: BoxFit.cover,
                                   ),
-                                  const SizedBox(width: 5),
-                                  Text(
-                                    post['user']['name'],
-                                    style: const TextStyle(
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.w900,
-                                      color: Colors.black,
-                                    ),
+                                ),
+                                const SizedBox(width: 5),
+                                Text(
+                                  post['user']['name'],
+                                  style: const TextStyle(
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w900,
+                                    color: Colors.black,
                                   ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    "Yesterday",
-                                    style: const TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.black,
-                                    ),
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  formattedDay,
+                                  style: const TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.black,
                                   ),
-                                  const SizedBox(width: 5),
-                                  Text(
-                                    "10:49",
-                                    style: const TextStyle(
-                                      fontSize: 11,
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.black,
-                                    ),
+                                ),
+                                const SizedBox(width: 5),
+                                Text(
+                                  formattedDate,
+                                  style: const TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.black,
                                   ),
-                                ],
-                              ),
-                            ],
-                          ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                         subtitle: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -213,12 +363,34 @@ class FeedScreenState extends State<FeedScreen> {
                     Positioned(
                       bottom: 10,
                       left: 20,
-                      child: tymIcon,
+                      child: InkWell(
+                        onTap: () {
+                          print(post['liked']);
+                          print(post);
+                          notifier.likePost(post['_id']);
+                          PostService().likePost(post['_id']);
+                        },
+                        child: !post["liked"] ? tymIcon : heartIcon,
+                      ),
                     ),
                     Positioned(
                       bottom: 13,
                       left: 70,
-                      child: commentIcon,
+                      child: InkWell(
+                          onTap: () {
+                            // final List comments = [
+                            //   {'username': 'User1', 'comment': 'Nice post!'},
+                            //   {
+                            //     'username': 'User2',
+                            //     'comment':
+                            //         'I love this! I kkkkkkkkkkkkkkkkkkkkkkdkalsdkmalsdalkskadaldmskadmlsadmksa'
+                            //   },
+                            // ];
+                            final List comments = post['comments'];
+                            _showCommentsSheet(comments, post['_id']);
+                            print('comment');
+                          },
+                          child: commentIcon),
                     ),
                   ],
                 ));

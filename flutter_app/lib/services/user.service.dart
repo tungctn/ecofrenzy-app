@@ -17,6 +17,7 @@ class UserService {
       Uri.parse('$api/user/$userId'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ${prefs.getString('token')}',
       },
       body: jsonEncode(body),
     );
@@ -36,6 +37,7 @@ class UserService {
       Uri.parse('$api/user/add-friend'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ${prefs.getString('token')}',
       },
       body: jsonEncode({"userId": userId, "friendId": friendId}),
     );
@@ -55,6 +57,7 @@ class UserService {
       Uri.parse('$api/user/$userId/friend-list'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ${prefs.getString('token')}',
       },
     );
     if (response.statusCode == 200) {
@@ -73,6 +76,7 @@ class UserService {
       Uri.parse('$api/user/$userId/friend-suggest'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ${prefs.getString('token')}',
       },
     );
 
@@ -80,6 +84,26 @@ class UserService {
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
       print(jsonResponse['users']);
       return jsonResponse['users'];
+    } else {
+      throw Exception('Failed to get friend request list.');
+    }
+  }
+
+  Future<dynamic> getTopThreeUser() async {
+    final SharedPreferences prefs = await SharedPreferences.getInstance();
+    final userId = prefs.getString('userId').toString();
+    final response = await http.get(
+      Uri.parse('$api/point/allUsers'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ${prefs.getString('token')}',
+      },
+    );
+
+    if (response.statusCode == 200) {
+      final Map<String, dynamic> jsonResponse = json.decode(response.body);
+      print(jsonResponse['topThreeUser']);
+      return jsonResponse['topThreeUser'];
     } else {
       throw Exception('Failed to get friend request list.');
     }

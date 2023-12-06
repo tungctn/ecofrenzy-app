@@ -1,4 +1,5 @@
-const api = "https://nnv7xc0r7d.execute-api.ap-southeast-1.amazonaws.com/prod/api";
+const api =
+    "https://eb22xa7f4c.execute-api.ap-southeast-1.amazonaws.com/prod/api";
 // const api = "http://103.107.183.43:5000/api";
 const token =
     "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjo3LCJleHAiOjE3Mjg2NDMwMzB9.0a6nZj0RRV2uDlcwJdUDXews31euJa8TeCaMNRpepEQ";

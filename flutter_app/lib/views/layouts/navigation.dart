@@ -9,7 +9,6 @@ import 'package:flutter_app/views/screens/challenge.screen.dart';
 import 'package:flutter_app/views/screens/challenge_detector.screen.dart';
 import 'package:flutter_app/views/screens/feed.screen.dart';
 import 'package:flutter_app/views/screens/friend.screen.dart';
-import 'package:flutter_app/views/screens/incentives.screen.dart';
 import 'package:flutter_app/views/screens/leaderboard.screen.dart';
 import 'package:flutter_app/views/screens/learn.screen.dart';
 import 'package:flutter_app/views/screens/auth/sign_in.screen.dart';
@@ -26,7 +25,7 @@ class Navigation extends StatefulWidget {
 }
 
 class NavigationState extends State<Navigation> {
-  int _selectedIndex = 0;
+  int _selectedIndex = 1;
   bool _isPicked = false;
   bool _isLoading = false;
   // final authNotifier = AuthNotifier();
@@ -37,24 +36,6 @@ class NavigationState extends State<Navigation> {
   }
 
   Widget _buildPage() {
-    // switch (_selectedIndex) {
-    //   case 0:
-    //     return const ChallengeScreen();
-    //   case 1:
-    //     return const FeedScreen();
-    //   case 2:
-    //     return const LeaderBoardScreen();
-    //   case 3:
-    //   if (!isPicked) {
-    //     return const FriendScreen();
-    //   }
-    //   return const LearnScreen();
-    //   case 4:
-    //     return const LearnScreen();
-    //   default:
-    //     return const ChallengeScreen();
-    // }
-    print(ChallengeNotifier().challenges.length);
     if (_selectedIndex == 0) {
       return const ChallengeScreen();
     } else if (_selectedIndex == 1) {
@@ -62,8 +43,20 @@ class NavigationState extends State<Navigation> {
     } else if (_selectedIndex == 2) {
       return const LeaderBoardScreen();
     } else if (_selectedIndex == 3) {
-      print(_isPicked);
       return const FriendScreen();
+    } else if (_selectedIndex == 4) {
+      return const FriendScreen();
+    }
+    return const LearnScreen();
+  }
+
+  Widget _buildPagePicker() {
+    if (_selectedIndex == 0) {
+      return const ChallengeScreen();
+    } else if (_selectedIndex == 1) {
+      return const FeedScreen();
+    } else if (_selectedIndex == 3) {
+      return const LeaderBoardScreen();
     } else if (_selectedIndex == 4) {
       return const FriendScreen();
     }
@@ -106,6 +99,8 @@ class NavigationState extends State<Navigation> {
         if (_isLoading) {
           return const Scaffold(body: Loading());
         }
+        bool isPicked = notifier.challenges
+            .any((e) => e.status == "Picked" || e.status == "Pending");
         return Scaffold(
           appBar: AppBar(
             flexibleSpace: Container(
@@ -148,7 +143,7 @@ class NavigationState extends State<Navigation> {
               ),
             ],
           ),
-          body: _buildPage(),
+          body: isPicked ? _buildPagePicker() : _buildPage(),
           bottomNavigationBar: Container(
             decoration: BoxDecoration(
               boxShadow: [

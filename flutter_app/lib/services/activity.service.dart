@@ -7,7 +7,10 @@ class ActivityService {
   Future<List<dynamic>> getActivities() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     final userId = prefs.getString("userId").toString();
-    final response = await http.get(Uri.parse('$api/activity/$userId'));
+    final response = await http
+        .get(Uri.parse('$api/activity/$userId'), headers: <String, String>{
+      'Authorization': 'Bearer ${prefs.getString('token')}',
+    });
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
       print(jsonResponse);

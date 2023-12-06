@@ -265,7 +265,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                                         Column(
                                           children: [
                                             Text(
-                                              notifier.user['points']
+                                              notifier.user['totalPoint']
                                                   .toString(),
                                               textAlign: TextAlign.center,
                                               style: const TextStyle(

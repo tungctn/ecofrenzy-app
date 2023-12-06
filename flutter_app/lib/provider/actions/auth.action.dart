@@ -42,6 +42,7 @@ class AuthActions {
       notifier.isLogged = false;
       SharedPreferences prefs = await SharedPreferences.getInstance();
       prefs.remove("userId");
+      prefs.remove("token");
     } catch (error) {
       rethrow;
     }
@@ -53,6 +54,7 @@ class AuthActions {
       if (prefs.getString("userId") != null) {
         Map<String, dynamic> user =
             await AuthService().getUser(prefs.getString("userId")!);
+        print(user);
         notifier.setUser(user);
         notifier.isLogged = true;
       } else {

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/provider/actions/user.action.dart';
 import 'package:flutter_app/provider/notifiers/user.notifier.dart';
+import 'package:flutter_app/services/request.service.dart';
 import 'package:flutter_app/views/components/shared/loading.dart';
 import 'package:provider/provider.dart';
 
@@ -58,6 +59,7 @@ class _FriendScreenState extends State<FriendScreen> {
   final userNotifier = UserNotifier();
   bool _isLoading = false;
   final List<bool> _addedStatus = [];
+  final List<bool> _requestStatus = [];
 
   @override
   void initState() {
@@ -72,6 +74,7 @@ class _FriendScreenState extends State<FriendScreen> {
   void loadSuggestFriend() async {
     await UserActions.fetchSuggestFriend(context.read<UserNotifier>());
     await UserActions.fetchFriends(context.read<UserNotifier>());
+    await UserActions.fetchRequestsPendingByUser(context.read<UserNotifier>());
     if (mounted) {
       setState(() {
         _isLoading = false;
@@ -182,6 +185,112 @@ class _FriendScreenState extends State<FriendScreen> {
                 ),
               ),
             ),
+            const Text(
+              'Lời mời kết bạn',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            ),
+            Expanded(
+              child: ListView.builder(
+                itemCount:
+                    notifier.requests == null ? 0 : notifier.requests.length,
+                itemBuilder: (context, index) {
+                  final friend = notifier.requests[index];
+                  return Container(
+                      margin: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(10),
+                          border: Border.all(color: Colors.grey)),
+                      child: ListTile(
+                        leading: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            CircleAvatar(
+                              backgroundImage:
+                                  NetworkImage(friend["requester"]["image"]),
+                            ),
+                            RichText(
+                              text: TextSpan(children: [
+                                const WidgetSpan(
+                                  child: Icon(
+                                    Icons.star,
+                                    size: 14,
+                                    color: Colors.yellow,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text:
+                                      "${friend["requester"]['totalPoint'].toString()} PT",
+                                  style: const TextStyle(color: Colors.grey),
+                                ),
+                              ]),
+                            ),
+                          ],
+                        ),
+                        title: RichText(
+                          text: TextSpan(children: [
+                            TextSpan(
+                              text: friend["requester"]['name'],
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black),
+                            ),
+                            const WidgetSpan(
+                              child: Icon(
+                                Icons.verified,
+                                size: 14,
+                                color: Colors.blue,
+                              ),
+                            ),
+                          ]),
+                        ),
+                        // subtitle: Text(friend['location']),
+                        subtitle: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            RichText(
+                              text: const TextSpan(children: [
+                                WidgetSpan(
+                                  child: Icon(
+                                    Icons.location_on,
+                                    size: 14,
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                TextSpan(
+                                  text: "Ha Noi",
+                                  style: TextStyle(color: Colors.grey),
+                                ),
+                              ]),
+                            ),
+                          ],
+                        ),
+
+                        trailing: ElevatedButton(
+                          onPressed: () {
+                            // setState(() {
+                            //   _addedStatus[index] = true;
+                            // });
+                            RequestService().updateRequest(friend["_id"], "2");
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: const Color(
+                                0xff5F2AC5), // Màu nút có thể thay đổi
+                          ),
+                          child: Text(
+                              friend["status"] == 1 ? 'ACCEPT' : 'PENDING',
+                              style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600)),
+                        ),
+                      ));
+                },
+              ),
+            ),
+            const Text(
+              'Gợi ý kết bạn',
+              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            ),
             Expanded(
               child: ListView.builder(
                 itemCount: notifier.suggestFriends == null
@@ -189,6 +298,13 @@ class _FriendScreenState extends State<FriendScreen> {
                     : notifier.suggestFriends.length,
                 itemBuilder: (context, index) {
                   final friend = notifier.suggestFriends[index];
+                  print(friend["_id"]);
+                  dynamic listRequests = notifier.requests
+                      .map((element) => element["requester"]["_id"])
+                      .toList();
+
+                  print(listRequests);
+                  friend["isAdd"] = listRequests.contains(friend["_id"]);
                   return Container(
                       margin: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
@@ -212,7 +328,7 @@ class _FriendScreenState extends State<FriendScreen> {
                                   ),
                                 ),
                                 TextSpan(
-                                  text: "${friend['points'].toString()} PT",
+                                  text: "${friend['totalPoint'].toString()} PT",
                                   style: const TextStyle(color: Colors.grey),
                                 ),
                               ]),
@@ -260,9 +376,11 @@ class _FriendScreenState extends State<FriendScreen> {
 
                         trailing: ElevatedButton(
                           onPressed: () {
-                            setState(() {
-                              _addedStatus[index] = true;
-                            });
+                            // setState(() {
+                            //   _addedStatus[index] = true;
+                            // });
+                            RequestService().createRequest(friend["_id"]);
+                            notifier.sendRequest(friend["_id"]);
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: _addedStatus[index]
@@ -270,7 +388,8 @@ class _FriendScreenState extends State<FriendScreen> {
                                 : const Color(
                                     0xff5F2AC5), // Màu nút có thể thay đổi
                           ),
-                          child: Text(_addedStatus[index] ? 'ADDED' : 'ADD',
+                          child: Text(friend["isAdd"] ? 'PENDING' : 'ADD',
+                              // isRequest ? 'PENDING' : 'ADD',
                               style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.w600)),

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'constants.dart';
-import 'package:flutter_app/models/challenge.dart';
 
 Widget cancelIcon = SvgPicture.asset('assets/icons/cancel.svg');
 Widget likeIcon = SvgPicture.asset('assets/icons/like.svg');
@@ -20,6 +19,7 @@ Widget backIcon = SvgPicture.asset('assets/icons/back.svg');
 Widget cameraAltIcon = SvgPicture.asset('assets/icons/camera_alt.svg');
 Widget tymIcon = SvgPicture.asset('assets/icons/tym.svg');
 Widget commentIcon = SvgPicture.asset('assets/icons/comment.svg');
+Widget heartIcon = SvgPicture.asset('assets/icons/heart.svg');
 
 String getIcon(dynamic challenge) {
   for (var i = 0; i < listProps.length; i++) {

@@ -12,7 +12,10 @@ class ChallengeService {
       print('user chua dang nhap');
     }
     final response = await http.get(
-        Uri.parse('$api/user/${prefs.getString('userId')}/getTodayChallenge'));
+        Uri.parse('$api/user/${prefs.getString('userId')}/getTodayChallenge'),
+        headers: <String, String>{
+          'Authorization': 'Bearer ${prefs.getString('token')}',
+        });
     print('$api/user/${prefs.getString('userId')}/getTodayChallenge');
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
@@ -28,9 +31,12 @@ class ChallengeService {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
 
     final response = await http.patch(
-      Uri.parse(
-          '$api/user/${prefs.getString('userId')}/challenge/$challengeId/pick'),
-    );
+        Uri.parse(
+          '$api/user/${prefs.getString('userId')}/challenge/$challengeId/pick',
+        ),
+        headers: <String, String>{
+          'Authorization': 'Bearer ${prefs.getString('token')}',
+        });
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonResponse = json.decode(response.body);
       print(jsonResponse["challenges"]);
@@ -46,9 +52,11 @@ class ChallengeService {
 
     final response = await http.patch(
       Uri.parse(
-          '$api/user/${prefs.getString('userId')}/challenge/$challengeId/done'),
+        '$api/user/${prefs.getString('userId')}/challenge/$challengeId/done',
+      ),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
+        'Authorization': 'Bearer ${prefs.getString('token')}',
       },
       body: jsonEncode({"url": url}),
     );

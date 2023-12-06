@@ -20,6 +20,7 @@ class AuthService {
     if (response.statusCode == 200) {
       // prefs.setString("token", jsonResponse["token"]);
       prefs.setString("userId", jsonResponse["user"]["_id"]);
+      prefs.setString("token", jsonResponse["token"]);
       print(jsonResponse["user"]);
       jsonResponse["errors"] = false;
       return jsonResponse;
@@ -54,7 +55,11 @@ class AuthService {
   }
 
   Future<dynamic> getUser(String userId) async {
-    final response = await http.get(Uri.parse('$api/user/$userId'));
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    final response = await http
+        .get(Uri.parse('$api/user/$userId'), headers: <String, String>{
+      'Authorization': 'Bearer ${prefs.getString('token')}',
+    });
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> jsonResponse = json.decode(response.body);

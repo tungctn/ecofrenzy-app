@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 import 'package:flutter_app/models/challenge.dart';
@@ -77,7 +78,9 @@ class _ChallengeDetectorViewState extends State<ChallengeDetectorView> {
         _isLoading = false;
       });
     } catch (e) {
-      print(e);
+      if (kDebugMode) {
+        print(e);
+      }
       setState(() {
         _isLoading = false;
       });
@@ -85,9 +88,10 @@ class _ChallengeDetectorViewState extends State<ChallengeDetectorView> {
   }
 
   Future<void> _onSwitchCamera() async {
-    print("Switching camera!");
-    print(cameras.length);
+    // print("Switching camera!");
+    // print(cameras.length);
     print(_selectedCameraIdx);
+
     _selectedCameraIdx = _selectedCameraIdx == 1 ? 0 : 1;
     setState(() {
       _selectedCameraIdx = _selectedCameraIdx;

@@ -30,7 +30,7 @@ class ImageService {
 
   Future<dynamic> predictImage(String url, Challenge challenge) async {
     final response = await http.post(
-      Uri.parse('http://34.134.18.179:5000/predict'),
+      Uri.parse('http://34.132.41.89:5000/predict'),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },

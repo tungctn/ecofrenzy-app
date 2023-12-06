@@ -73,6 +73,7 @@ dependencies:
   flutter_stripe: ^9.2.0
   firebase_messaging: ^14.6.3
   firebase_core: ^2.14.0
+  intl: ^0.18.1
 
 dev_dependencies:
   flutter_test:

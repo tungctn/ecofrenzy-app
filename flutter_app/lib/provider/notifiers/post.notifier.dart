@@ -8,4 +8,14 @@ class PostNotifier extends ChangeNotifier {
     posts = newPosts;
     notifyListeners();
   }
+
+  void likePost(String postId) {
+    posts = posts.map((post) {
+      if (post['_id'] == postId) {
+        post['liked'] = !post['liked'];
+      }
+      return post;
+    }).toList();
+    notifyListeners();
+  }
 }
