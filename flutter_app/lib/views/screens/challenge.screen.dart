@@ -51,47 +51,59 @@ class ChallengeScreenState extends State<ChallengeScreen> {
               Stack(
                 children: [
                   Container(
-                    padding: EdgeInsets.only(left: 65, right: 20, top: 12),
-                    width: double.infinity,
-                    height: 240,
-                    decoration: ShapeDecoration(
-                      color: Colors.white.withOpacity(0.36000001430511475),
-                      shape: RoundedRectangleBorder(
-                        side: BorderSide(width: 1, color: Colors.white),
-                        borderRadius: BorderRadius.circular(18),
-                      ),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          "Liam" + " CHALLENGES you!!!",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w900, fontSize: 17),
+                      padding: EdgeInsets.all(12),
+                      decoration: ShapeDecoration(
+                        color: Colors.white.withOpacity(0.36000001430511475),
+                        shape: RoundedRectangleBorder(
+                          side: BorderSide(width: 1, color: Colors.white),
+                          borderRadius: BorderRadius.circular(18),
                         ),
-                        SizedBox(
-                          height: 2,
-                        ),
-                        Text(
-                          "“Hey, we should try this out. This challenge sounds fun ^^”",
-                          style: TextStyle(
-                              fontWeight: FontWeight.w600, fontSize: 14),
-                        )
-                      ],
-                    ),
-                  ),
-                  Container(
-                    width: 60,
-                    height: 60,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(50)),
-                      image: DecorationImage(
-                        image: NetworkImage(
-                            "https://cdn.sforum.vn/sforum/wp-content/uploads/2023/08/hinh-nen-meo-9.jpg"),
-                        fit: BoxFit.cover,
                       ),
-                    ),
-                  ),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 60,
+                            height: 60,
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(50)),
+                              image: DecorationImage(
+                                image: NetworkImage(
+                                    "https://cdn.sforum.vn/sforum/wp-content/uploads/2023/08/hinh-nen-meo-9.jpg"),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                          ),
+                          SizedBox(
+                            width: 12,
+                          ),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  "Liam" + " CHALLENGES you!!!",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w900,
+                                      fontSize: 16),
+                                ),
+                                SizedBox(
+                                  height: 2,
+                                ),
+                                Text(
+                                  "“Hey, we should try this out. This challenge sounds fun ^^”",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 14),
+                                )
+                              ],
+                            ),
+                          ),
+                          SizedBox(
+                            width: 12,
+                          ),
+                        ],
+                      )),
                   Column(
                     children: [
                       SizedBox(
@@ -99,7 +111,7 @@ class ChallengeScreenState extends State<ChallengeScreen> {
                       ),
                       ChallengeCard(challenge: notifier.challenges[0])
                     ],
-                  ),
+                  )
                 ],
               )
             ],
@@ -118,9 +130,9 @@ class ChallengeScreenState extends State<ChallengeScreen> {
           children: [
             Container(
                 padding: const EdgeInsets.only(
-                    left: 20, right: 20, top: 10, bottom: 10),
+                    left: 10, right: 10, top: 10, bottom: 10),
                 margin: const EdgeInsets.only(
-                    bottom: 20, top: 20, left: 20, right: 20),
+                    bottom: 20, top: 20, left: 10, right: 10),
                 width: 380,
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
