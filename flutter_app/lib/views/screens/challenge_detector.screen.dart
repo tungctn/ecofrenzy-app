@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:flutter_app/core/utils/toast_utils.dart';
 import 'package:flutter_app/models/challenge.dart';
 import 'package:flutter_app/provider/actions/challenge.action.dart';
 import 'package:flutter_app/provider/actions/post.action.dart';
@@ -151,14 +152,9 @@ class _ChallengeDetectorViewState extends State<ChallengeDetectorView> {
           challenge);
       print(predictResponse['success']);
       if (predictResponse['success']) {
-        Fluttertoast.showToast(
-            msg: predictResponse['message'],
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
-            timeInSecForIosWeb: 3,
-            textColor: Colors.white,
-            backgroundColor: Colors.green,
-            fontSize: 16.0);
+        ToastUtils.showToast(
+            context, predictResponse["message"], TypeToast.success);
+
         final post = {
           "image": jsonDecode(response.body.toString())['data']['image']['url'],
           "challengeId": challenge.id.toString(),
@@ -172,14 +168,8 @@ class _ChallengeDetectorViewState extends State<ChallengeDetectorView> {
         PostActions.createPost(
             postNotifier, post['image'], post['challengeId']);
       } else {
-        Fluttertoast.showToast(
-            msg: predictResponse['message'],
-            toastLength: Toast.LENGTH_SHORT,
-            gravity: ToastGravity.CENTER,
-            timeInSecForIosWeb: 3,
-            textColor: Colors.white,
-            backgroundColor: Colors.red,
-            fontSize: 16.0);
+        ToastUtils.showToast(
+            context, predictResponse["message"], TypeToast.error);
       }
     } else {
       print("Upload failed with status code: ${response.statusCode}");

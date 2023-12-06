@@ -72,6 +72,16 @@ class ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
+  String getYearUserJoin(String dateStr) {
+    // Parse the string date
+    DateTime dateTime = DateTime.parse(dateStr);
+
+    // Extract the year
+    int year = dateTime.year;
+
+    return year.toString();
+  }
+
   Widget buildInfo() {
     switch (_selectedIndex) {
       case 0:
@@ -242,8 +252,10 @@ class ProfileScreenState extends State<ProfileScreen> {
                                   const SizedBox(
                                     height: 10,
                                   ),
-                                  const Text(
-                                    'Thành viên từ 2021',
+                                  Text(
+                                    'Thành viên từ ' +
+                                        getYearUserJoin(
+                                            notifier.user["createdAt"]),
                                     textAlign: TextAlign.center,
                                     style: TextStyle(
                                       color: Color(0xFF6C7A9C),
