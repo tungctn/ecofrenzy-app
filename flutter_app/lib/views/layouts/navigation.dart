@@ -25,7 +25,7 @@ class Navigation extends StatefulWidget {
 }
 
 class NavigationState extends State<Navigation> {
-  int _selectedIndex = 1;
+  int _selectedIndex = 0;
   bool _isPicked = false;
   bool _isLoading = false;
   // final authNotifier = AuthNotifier();
@@ -122,9 +122,9 @@ class NavigationState extends State<Navigation> {
                   ? "Today Challenge"
                   : _selectedIndex == 1
                       ? "Feed"
-                      : _selectedIndex == 2
+                      : _selectedIndex == 2 || _selectedIndex == 3
                           ? "Leaderboard"
-                          : _selectedIndex == 3
+                          : _selectedIndex == 3 || _selectedIndex == 4
                               ? "Your Friends"
                               : "Learn",
               style: const TextStyle(
@@ -223,11 +223,11 @@ class NavigationState extends State<Navigation> {
         ),
         label: '',
       ));
-      if (_selectedIndex == 3) {
-        _selectedIndex = 2;
-      } else if (_selectedIndex == 4) {
-        _selectedIndex = 3;
-      }
+      // if (_selectedIndex == 3 && isPicked) {
+      //   _selectedIndex = 2;
+      // } else if (_selectedIndex == 4 && isPicked) {
+      //   _selectedIndex = 3;
+      // }
     }
     // else {
     //   if (_selectedIndex == 3) {

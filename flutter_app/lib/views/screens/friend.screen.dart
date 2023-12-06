@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/provider/actions/auth.action.dart';
 import 'package:flutter_app/provider/actions/user.action.dart';
+import 'package:flutter_app/provider/notifiers/auth.notifier.dart';
 import 'package:flutter_app/provider/notifiers/user.notifier.dart';
 import 'package:flutter_app/services/request.service.dart';
 import 'package:flutter_app/views/components/shared/loading.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
 class FriendScreen extends StatefulWidget {
@@ -57,9 +60,11 @@ class _FriendScreenState extends State<FriendScreen> {
     // "assets/images/avatar.png",
   ];
   final userNotifier = UserNotifier();
+  final authNotifier = AuthNotifier();
   bool _isLoading = false;
   final List<bool> _addedStatus = [];
   final List<bool> _requestStatus = [];
+  int _selectedIndex = 0;
 
   @override
   void initState() {
@@ -68,6 +73,7 @@ class _FriendScreenState extends State<FriendScreen> {
       _isLoading = true;
     });
     _addedStatus.addAll(List.generate(5, (index) => false));
+    _requestStatus.addAll(List.generate(5, (index) => false));
     loadSuggestFriend();
   }
 
@@ -75,11 +81,133 @@ class _FriendScreenState extends State<FriendScreen> {
     await UserActions.fetchSuggestFriend(context.read<UserNotifier>());
     await UserActions.fetchFriends(context.read<UserNotifier>());
     await UserActions.fetchRequestsPendingByUser(context.read<UserNotifier>());
+    await AuthActions.checkAuth(authNotifier);
     if (mounted) {
       setState(() {
         _isLoading = false;
       });
     }
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
+  Widget _buildFriend(dynamic dataFriend) {
+    return Expanded(
+      child: ListView.builder(
+        itemCount: dataFriend == null ? 0 : dataFriend.length,
+        itemBuilder: (context, index) {
+          final friend = dataFriend[index];
+          return Container(
+              margin: const EdgeInsets.all(10),
+              decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                  border: Border.all(color: Colors.grey)),
+              child: ListTile(
+                leading: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircleAvatar(
+                      backgroundImage: NetworkImage(_selectedIndex == 0
+                          ? friend["requester"]["image"]
+                          : friend["image"]),
+                      radius: 20,
+                    ),
+                    RichText(
+                      text: TextSpan(children: [
+                        const WidgetSpan(
+                          child: Icon(
+                            Icons.star,
+                            size: 14,
+                            color: Colors.yellow,
+                          ),
+                        ),
+                        TextSpan(
+                          text: _selectedIndex == 0
+                              ? "${friend["requester"]['totalPoint'].toString()} PT"
+                              : "${friend['totalPoint'].toString()} PT",
+                          style: const TextStyle(color: Colors.grey),
+                        ),
+                      ]),
+                    ),
+                  ],
+                ),
+                title: RichText(
+                  text: TextSpan(children: [
+                    TextSpan(
+                      text: _selectedIndex == 0
+                          ? friend["requester"]['name']
+                          : friend['name'],
+                      style: const TextStyle(
+                          fontWeight: FontWeight.bold, color: Colors.black),
+                    ),
+                    const WidgetSpan(
+                      child: Icon(
+                        Icons.verified,
+                        size: 14,
+                        color: Colors.blue,
+                      ),
+                    ),
+                  ]),
+                ),
+                // subtitle: Text(friend['location']),
+                subtitle: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    RichText(
+                      text: const TextSpan(children: [
+                        WidgetSpan(
+                          child: Icon(
+                            Icons.location_on,
+                            size: 14,
+                            color: Colors.grey,
+                          ),
+                        ),
+                        TextSpan(
+                          text: "Ha Noi",
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                      ]),
+                    ),
+                  ],
+                ),
+
+                trailing: ElevatedButton(
+                  onPressed: () {
+                    _selectedIndex == 0
+                        ? RequestService().updateRequest(friend["_id"], "2")
+                        : RequestService().createRequest(friend["_id"]);
+
+                    _selectedIndex == 0
+                        ? setState(() {
+                            _requestStatus[index] = true;
+                          })
+                        : setState(() {
+                            _addedStatus[index] = true;
+                          });
+                  },
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: const Color(0xff5F2AC5),
+                  ),
+                  child: Text(
+                      _selectedIndex == 0
+                          ? _requestStatus[index]
+                              ? 'ACCEPTED'
+                              : 'ACCEPT'
+                          : _addedStatus[index]
+                              ? 'ADDED'
+                              : 'ADD',
+                      style: const TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.w600)),
+                ),
+              ));
+        },
+      ),
+    );
   }
 
   @override
@@ -91,6 +219,19 @@ class _FriendScreenState extends State<FriendScreen> {
           child: Loading(),
         );
       }
+      dynamic listRequests = notifier.requests
+          .map((element) => element["requester"]["_id"])
+          .toList();
+      dynamic listSuggestFriend = notifier.suggestFriends
+          .map((e) {
+            if (!listRequests.contains(e["_id"])) {
+              return e;
+            } else {
+              return null;
+            }
+          })
+          .where((e) => e != null)
+          .toList();
       return Scaffold(
         appBar: AppBar(
           title: const Text(
@@ -141,7 +282,7 @@ class _FriendScreenState extends State<FriendScreen> {
                           Container(
                             padding: const EdgeInsets.only(top: 1),
                             child: Text(
-                              "You have ${notifier.friends.length.toString()} friends",
+                              "You have ${authNotifier.user["friends"].length.toString()} friends",
                               style: const TextStyle(
                                 color: Color(0xff5b6172),
                                 fontSize: 14.0,
@@ -185,219 +326,83 @@ class _FriendScreenState extends State<FriendScreen> {
                 ),
               ),
             ),
-            const Text(
-              'Lời mời kết bạn',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            const SizedBox(
+              height: 10,
             ),
-            Expanded(
-              child: ListView.builder(
-                itemCount:
-                    notifier.requests == null ? 0 : notifier.requests.length,
-                itemBuilder: (context, index) {
-                  final friend = notifier.requests[index];
-                  return Container(
-                      margin: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.grey)),
-                      child: ListTile(
-                        leading: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CircleAvatar(
-                              backgroundImage:
-                                  NetworkImage(friend["requester"]["image"]),
+            Container(
+                decoration: const BoxDecoration(color: Colors.transparent),
+                child: NavigationBarTheme(
+                  data: NavigationBarThemeData(
+                    indicatorColor: Colors.transparent,
+                    iconTheme: MaterialStateProperty.all(
+                      const IconThemeData(color: Colors.black),
+                    ),
+                    labelTextStyle: MaterialStateProperty.all(
+                      const TextStyle(color: Colors.black),
+                    ),
+                  ),
+                  child: NavigationBar(
+                    elevation: 100,
+                    backgroundColor: Colors.transparent,
+                    surfaceTintColor: Colors.transparent,
+                    height: 36,
+                    selectedIndex: _selectedIndex,
+                    onDestinationSelected: _onItemTapped,
+                    destinations: [
+                      NavigationDestination(
+                        icon: SizedBox(
+                          width: 120,
+                          height: 50,
+                          child: Container(
+                            margin: const EdgeInsets.only(top: 10),
+                            decoration: BoxDecoration(
+                                border: Border(
+                                    bottom: BorderSide(
+                                        color: _selectedIndex == 0
+                                            ? Colors.black
+                                            : Colors.transparent,
+                                        width: 2))),
+                            child: const Text(
+                              "Lời mời kết bạn",
+                              style: TextStyle(
+                                  color: Color(0xff5b6172),
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.w800),
                             ),
-                            RichText(
-                              text: TextSpan(children: [
-                                const WidgetSpan(
-                                  child: Icon(
-                                    Icons.star,
-                                    size: 14,
-                                    color: Colors.yellow,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text:
-                                      "${friend["requester"]['totalPoint'].toString()} PT",
-                                  style: const TextStyle(color: Colors.grey),
-                                ),
-                              ]),
-                            ),
-                          ],
-                        ),
-                        title: RichText(
-                          text: TextSpan(children: [
-                            TextSpan(
-                              text: friend["requester"]['name'],
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black),
-                            ),
-                            const WidgetSpan(
-                              child: Icon(
-                                Icons.verified,
-                                size: 14,
-                                color: Colors.blue,
-                              ),
-                            ),
-                          ]),
-                        ),
-                        // subtitle: Text(friend['location']),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            RichText(
-                              text: const TextSpan(children: [
-                                WidgetSpan(
-                                  child: Icon(
-                                    Icons.location_on,
-                                    size: 14,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: "Ha Noi",
-                                  style: TextStyle(color: Colors.grey),
-                                ),
-                              ]),
-                            ),
-                          ],
-                        ),
-
-                        trailing: ElevatedButton(
-                          onPressed: () {
-                            // setState(() {
-                            //   _addedStatus[index] = true;
-                            // });
-                            RequestService().updateRequest(friend["_id"], "2");
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: const Color(
-                                0xff5F2AC5), // Màu nút có thể thay đổi
                           ),
-                          child: Text(
-                              friend["status"] == 1 ? 'ACCEPT' : 'PENDING',
-                              style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600)),
                         ),
-                      ));
-                },
-              ),
-            ),
-            const Text(
-              'Gợi ý kết bạn',
-              style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-            ),
-            Expanded(
-              child: ListView.builder(
-                itemCount: notifier.suggestFriends == null
-                    ? 0
-                    : notifier.suggestFriends.length,
-                itemBuilder: (context, index) {
-                  final friend = notifier.suggestFriends[index];
-                  print(friend["_id"]);
-                  dynamic listRequests = notifier.requests
-                      .map((element) => element["requester"]["_id"])
-                      .toList();
-
-                  print(listRequests);
-                  friend["isAdd"] = listRequests.contains(friend["_id"]);
-                  return Container(
-                      margin: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: Colors.grey)),
-                      child: ListTile(
-                        leading: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            CircleAvatar(
-                              backgroundImage: NetworkImage(friend["image"]),
+                        label: '',
+                      ),
+                      NavigationDestination(
+                        icon: SizedBox(
+                          width: 110,
+                          height: 50,
+                          child: Container(
+                            margin: const EdgeInsets.only(top: 10),
+                            decoration: BoxDecoration(
+                                border: Border(
+                                    bottom: BorderSide(
+                                        color: _selectedIndex == 1
+                                            ? Colors.black
+                                            : Colors.transparent,
+                                        width: 2))),
+                            child: const Text(
+                              "Gợi ý kết bạn",
+                              style: TextStyle(
+                                  color: Color(0xff5b6172),
+                                  fontSize: 14.0,
+                                  fontWeight: FontWeight.w800),
                             ),
-                            RichText(
-                              text: TextSpan(children: [
-                                const WidgetSpan(
-                                  child: Icon(
-                                    Icons.star,
-                                    size: 14,
-                                    color: Colors.yellow,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: "${friend['totalPoint'].toString()} PT",
-                                  style: const TextStyle(color: Colors.grey),
-                                ),
-                              ]),
-                            ),
-                          ],
-                        ),
-                        title: RichText(
-                          text: TextSpan(children: [
-                            TextSpan(
-                              text: friend['name'],
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.black),
-                            ),
-                            const WidgetSpan(
-                              child: Icon(
-                                Icons.verified,
-                                size: 14,
-                                color: Colors.blue,
-                              ),
-                            ),
-                          ]),
-                        ),
-                        // subtitle: Text(friend['location']),
-                        subtitle: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            RichText(
-                              text: const TextSpan(children: [
-                                WidgetSpan(
-                                  child: Icon(
-                                    Icons.location_on,
-                                    size: 14,
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                                TextSpan(
-                                  text: "Ha Noi",
-                                  style: TextStyle(color: Colors.grey),
-                                ),
-                              ]),
-                            ),
-                          ],
-                        ),
-
-                        trailing: ElevatedButton(
-                          onPressed: () {
-                            // setState(() {
-                            //   _addedStatus[index] = true;
-                            // });
-                            RequestService().createRequest(friend["_id"]);
-                            notifier.sendRequest(friend["_id"]);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: _addedStatus[index]
-                                ? Colors.grey
-                                : const Color(
-                                    0xff5F2AC5), // Màu nút có thể thay đổi
                           ),
-                          child: Text(friend["isAdd"] ? 'PENDING' : 'ADD',
-                              // isRequest ? 'PENDING' : 'ADD',
-                              style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.w600)),
                         ),
-                      ));
-                },
-              ),
-            ),
+                        label: '',
+                      ),
+                    ],
+                  ),
+                )),
+            _selectedIndex == 0
+                ? _buildFriend(notifier.requests)
+                : _buildFriend(listSuggestFriend),
           ],
         ),
       );

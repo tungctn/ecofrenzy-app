@@ -44,7 +44,7 @@ class ChallengeCardState extends State<ChallengeCard> {
                       Container(
                         width: 38,
                         height: 38,
-                        decoration: BoxDecoration(
+                        decoration: const BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(50)),
                           image: DecorationImage(
                             image: NetworkImage(
@@ -53,17 +53,17 @@ class ChallengeCardState extends State<ChallengeCard> {
                           ),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 12,
                       ),
                       Expanded(
                         child: Text(
                           friends[index],
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontWeight: FontWeight.w900, fontSize: 16),
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 12,
                       ),
                       Checkbox(
@@ -195,8 +195,9 @@ class ChallengeCardState extends State<ChallengeCard> {
                                         children: [
                                           Expanded(
                                             child: Container(
-                                                padding: EdgeInsets.symmetric(
-                                                    horizontal: 14),
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                        horizontal: 14),
                                                 decoration: BoxDecoration(
                                                   color: getGradientColor(
                                                       challenge)[2],
@@ -205,12 +206,12 @@ class ChallengeCardState extends State<ChallengeCard> {
                                                   children: [
                                                     Container(
                                                       height: 32,
-                                                      padding:
-                                                          EdgeInsets.symmetric(
-                                                              horizontal: 12),
-                                                      margin:
-                                                          EdgeInsets.symmetric(
-                                                              vertical: 12),
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                          horizontal: 12),
+                                                      margin: const EdgeInsets
+                                                          .symmetric(
+                                                          vertical: 12),
                                                       decoration: BoxDecoration(
                                                         borderRadius:
                                                             BorderRadius
@@ -218,7 +219,7 @@ class ChallengeCardState extends State<ChallengeCard> {
                                                         color: Colors.white,
                                                       ),
                                                       child: TextField(
-                                                        style: TextStyle(
+                                                        style: const TextStyle(
                                                             fontSize: 13),
                                                         decoration: InputDecoration(
                                                             hintText: 'Search',
@@ -328,22 +329,23 @@ class ChallengeCardState extends State<ChallengeCard> {
                                               label: const Text(""),
                                             ),
                                           ),
-                                          Expanded(
-                                              child: FittedBox(
-                                            child: TextButton.icon(
-                                              onPressed: () {
-                                                ChallengeActions.pickChallenge(
-                                                    context.read<
-                                                        ChallengeNotifier>(),
-                                                    challenge.id);
-                                                setState(() {
-                                                  isExpanded = true;
-                                                });
-                                              },
-                                              icon: likeIcon,
-                                              label: const Text(""),
-                                            ),
-                                          )),
+                                          if (isPicked)
+                                            Expanded(
+                                                child: FittedBox(
+                                              child: TextButton.icon(
+                                                onPressed: () {
+                                                  ChallengeActions.pickChallenge(
+                                                      context.read<
+                                                          ChallengeNotifier>(),
+                                                      challenge.id);
+                                                  setState(() {
+                                                    isExpanded = true;
+                                                  });
+                                                },
+                                                icon: likeIcon,
+                                                label: const Text(""),
+                                              ),
+                                            )),
                                           Expanded(
                                             child: TextButton.icon(
                                               onPressed: () {
