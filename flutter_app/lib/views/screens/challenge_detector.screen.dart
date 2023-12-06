@@ -11,6 +11,7 @@ import 'package:flutter_app/services/image.service.dart';
 import 'package:flutter_app/utils/icon.dart';
 import 'package:flutter_app/views/components/challenge/challenge_camera.card.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http_parser/http_parser.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -114,6 +115,15 @@ class _ChallengeDetectorViewState extends State<ChallengeDetectorView> {
     // });
   }
 
+  Future<void> _onClickFlash() async {
+    print("click falsh!");
+    if (_controller?.value.flashMode == FlashMode.off) {
+      await _controller?.setFlashMode(FlashMode.torch);
+    } else {
+      await _controller?.setFlashMode(FlashMode.off);
+    }
+  }
+
   Future<void> uploadImageToServer(
       String filePath, String challengeId, Challenge challenge) async {
     var uri = Uri.parse("http://34.142.196.144:4000/api/images");
@@ -197,6 +207,7 @@ class _ChallengeDetectorViewState extends State<ChallengeDetectorView> {
             _challengeDescription(challengePicked.first),
             _cameraAltButton(challengePicked.first),
             _isLoading ? _loadingWidget() : const SizedBox.shrink(),
+            _flashCameraButton(),
             _toggleCameraButton(),
           ],
         ),
@@ -257,7 +268,7 @@ class _ChallengeDetectorViewState extends State<ChallengeDetectorView> {
       );
   Widget _toggleCameraButton() => Positioned(
         bottom: 40,
-        right: 10,
+        right: 20,
         child: Container(
           decoration: BoxDecoration(
             color: Colors.white,
@@ -268,6 +279,23 @@ class _ChallengeDetectorViewState extends State<ChallengeDetectorView> {
           child: IconButton(
             icon: const Icon(Icons.cameraswitch, size: 40),
             onPressed: _onSwitchCamera,
+          ),
+        ),
+      );
+
+  Widget _flashCameraButton() => Positioned(
+        bottom: 40,
+        left: 20,
+        child: Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(50),
+          ),
+          height: 60,
+          width: 60,
+          child: IconButton(
+            icon: Icon(Icons.bolt, size: 40),
+            onPressed: _onClickFlash,
           ),
         ),
       );
