@@ -9,6 +9,7 @@ import 'package:flutter_app/views/screens/challenge.screen.dart';
 import 'package:flutter_app/views/screens/challenge_detector.screen.dart';
 import 'package:flutter_app/views/screens/feed.screen.dart';
 import 'package:flutter_app/views/screens/friend.screen.dart';
+import 'package:flutter_app/views/screens/voucher.screen.dart';
 import 'package:flutter_app/views/screens/leaderboard.screen.dart';
 import 'package:flutter_app/views/screens/learn.screen.dart';
 import 'package:flutter_app/views/screens/auth/sign_in.screen.dart';
@@ -46,8 +47,9 @@ class NavigationState extends State<Navigation> {
     } else if (_selectedIndex == 3) {
       return const FriendScreen();
     } else if (_selectedIndex == 4) {
-      return const FriendScreen();
+      return const VoucherScreen();
     }
+
     return const LearnScreen();
   }
 
@@ -56,12 +58,30 @@ class NavigationState extends State<Navigation> {
       return const ChallengeScreen();
     } else if (_selectedIndex == 1) {
       return const FeedScreen();
-    } else if (_selectedIndex == 3) {
+    } else if (_selectedIndex == 2) {
       return const LeaderBoardScreen();
-    } else if (_selectedIndex == 4) {
+    } else if (_selectedIndex == 3) {
       return const FriendScreen();
+    } else if (_selectedIndex == 4) {
+      return const VoucherScreen();
     }
     return const LearnScreen();
+  }
+
+  String _titleAppBar() {
+    if (_selectedIndex == 0) {
+      return "Today Challenge";
+    } else if (_selectedIndex == 1) {
+      return "Feed";
+    } else if (_selectedIndex == 2) {
+      return "Leaderboard";
+    } else if (_selectedIndex == 3) {
+      return "Your Friends";
+    } else if (_selectedIndex == 4) {
+      return "Vouchers";
+    }
+
+    return "Today Challenge";
   }
 
   @override
@@ -119,15 +139,7 @@ class NavigationState extends State<Navigation> {
             centerTitle: true,
             leading: const Icon(Icons.supervisor_account),
             title: Text(
-              _selectedIndex == 0
-                  ? "Today Challenge"
-                  : _selectedIndex == 1
-                      ? "Feed"
-                      : _selectedIndex == 2 || _selectedIndex == 3
-                          ? "Leaderboard"
-                          : _selectedIndex == 3 || _selectedIndex == 4
-                              ? "Your Friends"
-                              : "Learn",
+              _titleAppBar(),
               style: const TextStyle(
                   fontFamily: "Ridley Grotesk Bold", fontSize: 25),
             ),
@@ -182,7 +194,7 @@ class NavigationState extends State<Navigation> {
       icon: SizedBox(
         height: 30,
         width: 30,
-        child: Icon(FontAwesomeIcons.ticket),
+        child: Icon(FontAwesomeIcons.fire),
       ),
       label: 'Challenge',
     ));
@@ -247,7 +259,13 @@ class NavigationState extends State<Navigation> {
     items.add(BottomNavigationBarItem(
       icon: SizedBox(
           height: 30, width: 30, child: Icon(FontAwesomeIcons.userGroup)),
-      label: 'Friends',
+      label: 'Friend',
+    ));
+
+    items.add(BottomNavigationBarItem(
+      icon:
+          SizedBox(height: 30, width: 30, child: Icon(FontAwesomeIcons.ticket)),
+      label: 'Voucher',
     ));
 
     return items;
