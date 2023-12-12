@@ -8,57 +8,14 @@ import 'package:flutter_app/views/components/shared/loading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
 
-class FriendScreen extends StatefulWidget {
-  const FriendScreen({Key? key}) : super(key: key);
+class VoucherScreen extends StatefulWidget {
+  const VoucherScreen({Key? key}) : super(key: key);
 
   @override
-  _FriendScreenState createState() => _FriendScreenState();
+  _VoucherScreenState createState() => _VoucherScreenState();
 }
 
-class _FriendScreenState extends State<FriendScreen> {
-  final List<Map<String, dynamic>> friends = [
-    {
-      'name': 'Alex Nguyen',
-      'location': 'Hanoi',
-      'points': '50 PT',
-      'added': false,
-      'image': 'assets/images/avatar.png'
-    },
-    {
-      'name': 'Jordan',
-      'location': 'Saigon',
-      'points': '50 PT',
-      'added': true,
-      'image': 'assets/images/avatar.png'
-    },
-    {
-      'name': 'Jordan',
-      'location': 'Saigon',
-      'points': '50 PT',
-      'added': false,
-      'image': 'assets/images/avatar.png'
-    },
-    {
-      'name': 'Jordan',
-      'location': 'Saigon',
-      'points': '50 PT',
-      'added': true,
-      'image': 'assets/images/avatar.png'
-    },
-    {
-      'name': 'Jordan',
-      'location': 'Saigon',
-      'points': '50 PT',
-      'added': false,
-      'image': 'assets/images/avatar.png'
-    },
-  ];
-  final List<String> friendImages = [
-    "assets/images/avatar.png",
-    "assets/images/avatar.png",
-    "assets/images/avatar.png",
-    // "assets/images/avatar.png",
-  ];
+class _VoucherScreenState extends State<VoucherScreen> {
   final userNotifier = UserNotifier();
   final authNotifier = AuthNotifier();
   bool _isLoading = false;
@@ -74,10 +31,10 @@ class _FriendScreenState extends State<FriendScreen> {
     });
     _addedStatus.addAll(List.generate(5, (index) => false));
     _requestStatus.addAll(List.generate(5, (index) => false));
-    loadSuggestFriend();
+    loadVoucher();
   }
 
-  void loadSuggestFriend() async {
+  void loadVoucher() async {
     await UserActions.fetchSuggestFriend(context.read<UserNotifier>());
     await UserActions.fetchFriends(context.read<UserNotifier>());
     await UserActions.fetchRequestsPendingByUser(context.read<UserNotifier>());
@@ -95,12 +52,12 @@ class _FriendScreenState extends State<FriendScreen> {
     });
   }
 
-  Widget _buildFriend(dynamic dataFriend) {
+  Widget _buildVoucher(dynamic dataVoucher) {
     return Expanded(
       child: ListView.builder(
-        itemCount: dataFriend == null ? 0 : dataFriend.length,
+        itemCount: dataVoucher == null ? 0 : dataVoucher.length,
         itemBuilder: (context, index) {
-          final friend = dataFriend[index];
+          final friend = dataVoucher[index];
           return Container(
               margin: const EdgeInsets.all(10),
               decoration: BoxDecoration(
@@ -212,30 +169,18 @@ class _FriendScreenState extends State<FriendScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<UserNotifier>(builder: (context, notifier, _) {
+    return Consumer<AuthNotifier>(builder: (context, notifier, _) {
       // print(notifier.suggestFriends);
       if (_isLoading) {
         return const Center(
           child: Loading(),
         );
       }
-      dynamic listRequests = notifier.requests
-          .map((element) => element["requester"]["_id"])
-          .toList();
-      dynamic listSuggestFriend = notifier.suggestFriends
-          .map((e) {
-            if (!listRequests.contains(e["_id"])) {
-              return e;
-            } else {
-              return null;
-            }
-          })
-          .where((e) => e != null)
-          .toList();
+
       return Scaffold(
         appBar: AppBar(
           title: const Text(
-            'Social network friends',
+            'Hot Vouchers',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           automaticallyImplyLeading: false,
@@ -259,67 +204,30 @@ class _FriendScreenState extends State<FriendScreen> {
                   ],
                   border: Border.all(color: Colors.grey)),
               child: Container(
-                margin: const EdgeInsets.only(left: 16.0, right: 16.0),
+                margin: const EdgeInsets.only(left: 26.0, right: 26.0),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
-                      margin: const EdgeInsets.only(right: 16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.only(bottom: 5.0),
-                            child: const Text(
-                              "Your friends",
-                              style: TextStyle(
-                                  color: Color(0xff5b6172),
-                                  fontSize: 24.0,
-                                  fontWeight: FontWeight.w800),
-                            ),
-                          ),
-                          Container(
-                            padding: const EdgeInsets.only(top: 1),
-                            child: Text(
-                              "You have ${authNotifier.user["friends"].length.toString()} friends",
-                              style: const TextStyle(
-                                color: Color(0xff5b6172),
-                                fontSize: 14.0,
-                              ),
-                            ),
-                          )
-                        ],
+                      child: const Text(
+                        "Your points",
+                        style: TextStyle(
+                            color: Color(0xff5b6172),
+                            fontSize: 26.0,
+                            fontWeight: FontWeight.w800),
                       ),
                     ),
                     Container(
-                      margin: const EdgeInsets.only(top: 5),
-                      height: 50,
-                      width: 100,
-                      child: Stack(
-                        children: [
-                          Positioned(
-                            left: 0,
-                            child: CircleAvatar(
-                              radius: 24,
-                              backgroundImage: AssetImage(friendImages[0]),
-                            ),
-                          ),
-                          Positioned(
-                            left: 30,
-                            child: CircleAvatar(
-                              radius: 24,
-                              backgroundImage: AssetImage(friendImages[1]),
-                            ),
-                          ),
-                          Positioned(
-                            left: 60,
-                            child: CircleAvatar(
-                              radius: 24,
-                              backgroundImage: AssetImage(friendImages[2]),
-                            ),
-                          )
-                        ],
+                      child: Text(
+                        notifier.user['totalPoint'].toString(),
+                        textAlign: TextAlign.center,
+                        style: const TextStyle(
+                          color: Color(0xFF444B8C),
+                          fontSize: 40,
+                          fontFamily: "Ridley Grotesk ExtraBold",
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
                   ],
@@ -351,7 +259,7 @@ class _FriendScreenState extends State<FriendScreen> {
                     destinations: [
                       NavigationDestination(
                         icon: SizedBox(
-                          width: 120,
+                          width: 150,
                           height: 50,
                           child: Container(
                             margin: const EdgeInsets.only(top: 10),
@@ -363,11 +271,11 @@ class _FriendScreenState extends State<FriendScreen> {
                                             : Colors.transparent,
                                         width: 2))),
                             child: const Text(
-                              "Lời mời kết bạn",
+                              "All voucher",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   color: Color(0xff5b6172),
-                                  fontSize: 14.0,
+                                  fontSize: 16.0,
                                   fontWeight: FontWeight.w800),
                             ),
                           ),
@@ -376,7 +284,7 @@ class _FriendScreenState extends State<FriendScreen> {
                       ),
                       NavigationDestination(
                         icon: SizedBox(
-                          width: 110,
+                          width: 150,
                           height: 50,
                           child: Container(
                             margin: const EdgeInsets.only(top: 10),
@@ -388,11 +296,11 @@ class _FriendScreenState extends State<FriendScreen> {
                                             : Colors.transparent,
                                         width: 2))),
                             child: const Text(
-                              "Gợi ý kết bạn",
+                              "History",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   color: Color(0xff5b6172),
-                                  fontSize: 14.0,
+                                  fontSize: 16.0,
                                   fontWeight: FontWeight.w800),
                             ),
                           ),
@@ -402,9 +310,6 @@ class _FriendScreenState extends State<FriendScreen> {
                     ],
                   ),
                 )),
-            _selectedIndex == 0
-                ? _buildFriend(notifier.requests)
-                : _buildFriend(listSuggestFriend),
           ],
         ),
       );
