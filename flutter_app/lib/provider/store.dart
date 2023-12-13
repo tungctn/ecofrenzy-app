@@ -4,6 +4,7 @@ import 'package:flutter_app/provider/notifiers/challenge.notifier.dart';
 import 'package:flutter_app/provider/notifiers/post.notifier.dart';
 import 'package:flutter_app/provider/notifiers/profile.notifier.dart';
 import 'package:flutter_app/provider/notifiers/user.notifier.dart';
+import 'package:flutter_app/provider/notifiers/voucher.notifier.dart';
 
 class Store {
   final ChallengeNotifier challengeNotifier;
@@ -12,6 +13,7 @@ class Store {
   final ProfileNotifier profileNotifier;
   final ActivityNotifier activityNotifier;
   final UserNotifier userNotifier;
+  final VoucherNotifier voucherNotifier;
 
   Store()
       : challengeNotifier = ChallengeNotifier(),
@@ -19,5 +21,6 @@ class Store {
         profileNotifier = ProfileNotifier(),
         authNotifier = AuthNotifier(),
         activityNotifier = ActivityNotifier(),
+        voucherNotifier = VoucherNotifier(),
         userNotifier = UserNotifier();
 }

@@ -1,9 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/core/constants/color_palatte.dart';
+import 'package:flutter_app/core/utils/help_utils.dart';
 import 'package:flutter_app/provider/actions/auth.action.dart';
 import 'package:flutter_app/provider/actions/user.action.dart';
+import 'package:flutter_app/provider/actions/voucher.action.dart';
 import 'package:flutter_app/provider/notifiers/auth.notifier.dart';
 import 'package:flutter_app/provider/notifiers/user.notifier.dart';
+import 'package:flutter_app/provider/notifiers/voucher.notifier.dart';
 import 'package:flutter_app/services/request.service.dart';
+import 'package:flutter_app/views/components/shared/line_widget.dart';
 import 'package:flutter_app/views/components/shared/loading.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:provider/provider.dart';
@@ -16,11 +21,9 @@ class VoucherScreen extends StatefulWidget {
 }
 
 class _VoucherScreenState extends State<VoucherScreen> {
-  final userNotifier = UserNotifier();
   final authNotifier = AuthNotifier();
+  final voucherNotifier = VoucherNotifier();
   bool _isLoading = false;
-  final List<bool> _addedStatus = [];
-  final List<bool> _requestStatus = [];
   int _selectedIndex = 0;
 
   @override
@@ -29,15 +32,12 @@ class _VoucherScreenState extends State<VoucherScreen> {
     setState(() {
       _isLoading = true;
     });
-    _addedStatus.addAll(List.generate(5, (index) => false));
-    _requestStatus.addAll(List.generate(5, (index) => false));
     loadVoucher();
   }
 
   void loadVoucher() async {
-    await UserActions.fetchSuggestFriend(context.read<UserNotifier>());
-    await UserActions.fetchFriends(context.read<UserNotifier>());
-    await UserActions.fetchRequestsPendingByUser(context.read<UserNotifier>());
+    await VoucherActions.fetchVouchersCategory(context.read<VoucherNotifier>());
+    await VoucherActions.fetchVoucher(context.read<VoucherNotifier>());
     await AuthActions.checkAuth(authNotifier);
     if (mounted) {
       setState(() {
@@ -52,115 +52,239 @@ class _VoucherScreenState extends State<VoucherScreen> {
     });
   }
 
-  Widget _buildVoucher(dynamic dataVoucher) {
+  String getCategoryName(int categoryId, List<dynamic> dataVoucherCategory) {
+    dynamic category = dataVoucherCategory.firstWhere(
+        (element) => element["id"] == categoryId,
+        orElse: () => null);
+
+    if (category == null) {
+      return "ShopeeLive";
+    } else {
+      return category["title"].toString();
+    }
+  }
+
+  Widget _buildVoucher(dynamic dataVoucher, List<dynamic> dataVoucherCategory) {
     return Expanded(
       child: ListView.builder(
         itemCount: dataVoucher == null ? 0 : dataVoucher.length,
         itemBuilder: (context, index) {
-          final friend = dataVoucher[index];
+          final dynamic voucher = dataVoucher[index];
+          print("Ttanh6");
+          print(voucher["avatar"] == null);
           return Container(
-              margin: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
-                  border: Border.all(color: Colors.grey)),
-              child: ListTile(
-                leading: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircleAvatar(
-                      backgroundImage: NetworkImage(_selectedIndex == 0
-                          ? friend["requester"]["image"]
-                          : friend["image"]),
-                      radius: 20,
+              margin: EdgeInsets.only(bottom: 18, top: 14, left: 20, right: 20),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Container(
+                    height: 260,
+                    width: 350,
+                    decoration: BoxDecoration(
+                      color: Color.fromARGB(255, 124, 201, 161),
+                      borderRadius: BorderRadius.circular(10),
                     ),
-                    RichText(
-                      text: TextSpan(children: [
-                        const WidgetSpan(
-                          child: Icon(
-                            Icons.star,
-                            size: 14,
-                            color: Colors.yellow,
+                    child: Column(
+                      children: [
+                        Expanded(
+                            child: Container(
+                          padding:
+                              EdgeInsets.only(left: 14, top: 14, right: 14),
+                          child: Row(
+                            children: [
+                              Column(
+                                children: [
+                                  Container(
+                                    width: 58,
+                                    height: 58,
+                                    decoration: BoxDecoration(
+                                      borderRadius:
+                                          BorderRadius.all(Radius.circular(50)),
+                                      image: DecorationImage(
+                                        image: NetworkImage(dataVoucher[index]
+                                                    ["avatar"] !=
+                                                null
+                                            ? dataVoucher[index]["avatar"]
+                                            : 'https://v-images.bloggiamgia.vn//thumbnail/07-07-2022/Ellipse-16-1657165581865.png'),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 8,
+                                  ),
+                                  Text(
+                                    getCategoryName(
+                                        dataVoucher[index]["couponCategoryId"],
+                                        dataVoucherCategory),
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontFamily: "Ridley Grotesk ExtraBold",
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                  SizedBox(
+                                    height: 6,
+                                  ),
+                                  Text(
+                                    dataVoucher[index]["offer"].toString(),
+                                    style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 16,
+                                        fontFamily: "Ridley Grotesk ExtraBold",
+                                        fontWeight: FontWeight.w600),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                width: 16,
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Text(
+                                        "Giảm ",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 20,
+                                            color: Colors.white),
+                                      ),
+                                      Text(
+                                        dataVoucher[index]["discountReward"] ==
+                                                null
+                                            ? ""
+                                            : HelpUtils.formatNumberToK(
+                                                dataVoucher[index]
+                                                    ["discountReward"]),
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w700,
+                                            fontSize: 28,
+                                            color: Color(0xFFFFFE00)),
+                                      )
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 2,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        "Đơn tối thiểu: ",
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 16,
+                                            color: Colors.white),
+                                      ),
+                                      Text(
+                                        HelpUtils.formatNumberToVND(
+                                            dataVoucher[index]["minSpend"]),
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w800,
+                                            fontSize: 16,
+                                            color: Colors.white),
+                                      )
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 4,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text("Hạn sử dụng: ",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 16,
+                                              color: Colors.white)),
+                                      Text(
+                                        dataVoucher[index]["expiredAt"] == null
+                                            ? "Không có"
+                                            : HelpUtils
+                                                .CalExpDateFromNowWithSecond(
+                                                    dataVoucher[index]
+                                                        ["expiredAt"]),
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 16,
+                                            color: Colors.white),
+                                      )
+                                    ],
+                                  ),
+                                  SizedBox(
+                                    height: 6,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text("Điểm cần đổi: ",
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w400,
+                                              fontSize: 16,
+                                              color: Colors.white)),
+                                      Text(
+                                          dataVoucher[index]["couponCategoryId"]
+                                              .toString(),
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.w700,
+                                              fontSize: 16,
+                                              color: Colors.white))
+                                    ],
+                                  )
+                                ],
+                              )
+                            ],
                           ),
+                        )),
+                        Row(
+                          children: [
+                            Container(
+                              height: 34,
+                              width: 20,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.only(
+                                      topRight: Radius.circular(50),
+                                      bottomRight: Radius.circular(50))),
+                            ),
+                            Expanded(
+                                child: Container(
+                              color: Colors.white,
+                              height: 2,
+                            )),
+                            Container(
+                              height: 34,
+                              width: 20,
+                              decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(50),
+                                      bottomLeft: Radius.circular(50))),
+                            )
+                          ],
                         ),
-                        TextSpan(
-                          text: _selectedIndex == 0
-                              ? "${friend["requester"]['totalPoint'].toString()} PT"
-                              : "${friend['totalPoint'].toString()} PT",
-                          style: const TextStyle(color: Colors.grey),
-                        ),
-                      ]),
-                    ),
-                  ],
-                ),
-                title: RichText(
-                  text: TextSpan(children: [
-                    TextSpan(
-                      text: _selectedIndex == 0
-                          ? friend["requester"]['name']
-                          : friend['name'],
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, color: Colors.black),
-                    ),
-                    const WidgetSpan(
-                      child: Icon(
-                        Icons.verified,
-                        size: 14,
-                        color: Colors.blue,
-                      ),
-                    ),
-                  ]),
-                ),
-                // subtitle: Text(friend['location']),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    RichText(
-                      text: const TextSpan(children: [
-                        WidgetSpan(
-                          child: Icon(
-                            Icons.location_on,
-                            size: 14,
-                            color: Colors.grey,
+                        Container(
+                          height: 40,
+                          margin: EdgeInsets.only(bottom: 12),
+                          child: TextButton(
+                            style: ButtonStyle(
+                                backgroundColor:
+                                    MaterialStateProperty.all<Color>(
+                                        ColorPalette.buttonColor)),
+                            onPressed: () {
+                              setState(() {});
+                            },
+                            child: const Text("Đổi mã giảm giá",
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w900)),
                           ),
-                        ),
-                        TextSpan(
-                          text: "Ha Noi",
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                      ]),
+                        )
+                      ],
                     ),
-                  ],
-                ),
-
-                trailing: ElevatedButton(
-                  onPressed: () {
-                    _selectedIndex == 0
-                        ? RequestService().updateRequest(friend["_id"], "2")
-                        : RequestService().createRequest(friend["_id"]);
-
-                    _selectedIndex == 0
-                        ? setState(() {
-                            _requestStatus[index] = true;
-                          })
-                        : setState(() {
-                            _addedStatus[index] = true;
-                          });
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xff5F2AC5),
-                  ),
-                  child: Text(
-                      _selectedIndex == 0
-                          ? _requestStatus[index]
-                              ? 'ACCEPTED'
-                              : 'ACCEPT'
-                          : _addedStatus[index]
-                              ? 'ADDED'
-                              : 'ADD',
-                      style: const TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.w600)),
-                ),
+                  )
+                ],
               ));
         },
       ),
@@ -169,7 +293,7 @@ class _VoucherScreenState extends State<VoucherScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<AuthNotifier>(builder: (context, notifier, _) {
+    return Consumer<VoucherNotifier>(builder: (context, notifier, _) {
       // print(notifier.suggestFriends);
       if (_isLoading) {
         return const Center(
@@ -180,7 +304,7 @@ class _VoucherScreenState extends State<VoucherScreen> {
       return Scaffold(
         appBar: AppBar(
           title: const Text(
-            'Hot Vouchers',
+            'Mã giảm giá hot',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
           automaticallyImplyLeading: false,
@@ -211,7 +335,7 @@ class _VoucherScreenState extends State<VoucherScreen> {
                   children: [
                     Container(
                       child: const Text(
-                        "Your points",
+                        "Điểm của bạn",
                         style: TextStyle(
                             color: Color(0xff5b6172),
                             fontSize: 26.0,
@@ -220,7 +344,7 @@ class _VoucherScreenState extends State<VoucherScreen> {
                     ),
                     Container(
                       child: Text(
-                        notifier.user['totalPoint'].toString(),
+                        "40000",
                         textAlign: TextAlign.center,
                         style: const TextStyle(
                           color: Color(0xFF444B8C),
@@ -271,7 +395,7 @@ class _VoucherScreenState extends State<VoucherScreen> {
                                             : Colors.transparent,
                                         width: 2))),
                             child: const Text(
-                              "All voucher",
+                              "Tất cả MGG",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   color: Color(0xff5b6172),
@@ -296,7 +420,7 @@ class _VoucherScreenState extends State<VoucherScreen> {
                                             : Colors.transparent,
                                         width: 2))),
                             child: const Text(
-                              "History",
+                              "Lịch sử đổi MGG",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                   color: Color(0xff5b6172),
@@ -310,6 +434,7 @@ class _VoucherScreenState extends State<VoucherScreen> {
                     ],
                   ),
                 )),
+            _buildVoucher(notifier.vouchers, notifier.vouchersCategory)
           ],
         ),
       );
