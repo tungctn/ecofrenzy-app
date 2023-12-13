@@ -3,6 +3,7 @@ import 'package:flutter_app/provider/notifiers/auth.notifier.dart';
 import 'package:flutter_app/provider/notifiers/post.notifier.dart';
 import 'package:flutter_app/provider/notifiers/profile.notifier.dart';
 import 'package:flutter_app/provider/notifiers/user.notifier.dart';
+import 'package:flutter_app/provider/notifiers/voucher.notifier.dart';
 import 'package:flutter_app/views/layouts/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/views/screens/auth/sign_in.screen.dart';
@@ -57,6 +58,8 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider<ActivityNotifier>.value(
               value: store.activityNotifier),
           ChangeNotifierProvider<UserNotifier>.value(value: store.userNotifier),
+          ChangeNotifierProvider<VoucherNotifier>.value(
+              value: store.voucherNotifier),
         ],
         child: Consumer<AuthNotifier>(builder: (context, notifier, _) {
           return MaterialApp(
@@ -71,7 +74,7 @@ class _MyAppState extends State<MyApp> {
               colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
               useMaterial3: true,
               textTheme: Theme.of(context).textTheme.apply(
-                    fontFamily: 'Ridley Grotesk Regular',
+                    fontFamily: 'Ridley Grotesk ExtraBold',
                   ),
             ),
             debugShowCheckedModeBanner: false,

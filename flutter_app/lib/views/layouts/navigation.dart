@@ -78,7 +78,7 @@ class NavigationState extends State<Navigation> {
     } else if (_selectedIndex == 3) {
       return "Your Friends";
     } else if (_selectedIndex == 4) {
-      return "Vouchers";
+      return "Mã giảm giá";
     }
 
     return "Today Challenge";
@@ -140,8 +140,7 @@ class NavigationState extends State<Navigation> {
             leading: const Icon(Icons.supervisor_account),
             title: Text(
               _titleAppBar(),
-              style: const TextStyle(
-                  fontFamily: "Ridley Grotesk Bold", fontSize: 25),
+              style: const TextStyle(fontSize: 25),
             ),
             actions: [
               IconButton(
@@ -265,7 +264,7 @@ class NavigationState extends State<Navigation> {
     items.add(BottomNavigationBarItem(
       icon:
           SizedBox(height: 30, width: 30, child: Icon(FontAwesomeIcons.ticket)),
-      label: 'Voucher',
+      label: 'Mã giảm giá',
     ));
 
     return items;
