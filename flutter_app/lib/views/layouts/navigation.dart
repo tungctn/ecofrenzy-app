@@ -45,8 +45,6 @@ class NavigationState extends State<Navigation> {
     } else if (_selectedIndex == 2) {
       return const LeaderBoardScreen();
     } else if (_selectedIndex == 3) {
-      return const FriendScreen();
-    } else if (_selectedIndex == 4) {
       return const VoucherScreen();
     }
 
@@ -61,8 +59,6 @@ class NavigationState extends State<Navigation> {
     } else if (_selectedIndex == 2) {
       return const LeaderBoardScreen();
     } else if (_selectedIndex == 3) {
-      return const FriendScreen();
-    } else if (_selectedIndex == 4) {
       return const VoucherScreen();
     }
     return const LearnScreen();
@@ -76,8 +72,6 @@ class NavigationState extends State<Navigation> {
     } else if (_selectedIndex == 2) {
       return "Leaderboard";
     } else if (_selectedIndex == 3) {
-      return "Your Friends";
-    } else if (_selectedIndex == 4) {
       return "Mã giảm giá";
     }
 
@@ -137,7 +131,14 @@ class NavigationState extends State<Navigation> {
               ),
             ),
             centerTitle: true,
-            leading: const Icon(Icons.supervisor_account),
+            leading: IconButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const FriendScreen()));
+                },
+                icon: const Icon(Icons.supervisor_account)),
             title: Text(
               _titleAppBar(),
               style: const TextStyle(fontSize: 25),
@@ -253,12 +254,6 @@ class NavigationState extends State<Navigation> {
       icon:
           SizedBox(height: 30, width: 30, child: Icon(FontAwesomeIcons.trophy)),
       label: 'Leaderboard',
-    ));
-
-    items.add(BottomNavigationBarItem(
-      icon: SizedBox(
-          height: 30, width: 30, child: Icon(FontAwesomeIcons.userGroup)),
-      label: 'Friend',
     ));
 
     items.add(BottomNavigationBarItem(

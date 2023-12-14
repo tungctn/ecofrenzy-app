@@ -74,6 +74,11 @@ class _FriendScreenState extends State<FriendScreen> {
     });
     _addedStatus.addAll(List.generate(5, (index) => false));
     _requestStatus.addAll(List.generate(5, (index) => false));
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     loadSuggestFriend();
   }
 
@@ -215,8 +220,11 @@ class _FriendScreenState extends State<FriendScreen> {
     return Consumer<UserNotifier>(builder: (context, notifier, _) {
       // print(notifier.suggestFriends);
       if (_isLoading) {
-        return const Center(
-          child: Loading(),
+        return Center(
+          child: Container(
+            color: Colors.white,
+            child: Loading(),
+          ),
         );
       }
       dynamic listRequests = notifier.requests
@@ -234,11 +242,28 @@ class _FriendScreenState extends State<FriendScreen> {
           .toList();
       return Scaffold(
         appBar: AppBar(
+          flexibleSpace: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFF38EB86), Color(0xFF39F5C4)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.vertical(
+                bottom: Radius.circular(20),
+              ),
+            ),
+          ),
+          centerTitle: true,
+          leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: const Icon(Icons.arrow_back)),
           title: const Text(
             'Social network friends',
-            style: TextStyle(fontWeight: FontWeight.bold),
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
-          automaticallyImplyLeading: false,
         ),
         body: Column(
           children: [
