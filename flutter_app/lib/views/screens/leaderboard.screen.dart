@@ -73,7 +73,7 @@ class LeaderBoardScreenState extends State<LeaderBoardScreen> {
                           height: 15,
                         ),
                         const Center(
-                          child: Text("TOP 3 PLAYERS",
+                          child: Text("BẢNG XẾP HẠNG",
                               style: TextStyle(
                                 fontSize: 25,
                                 color: Color(0xff5F2AC5),

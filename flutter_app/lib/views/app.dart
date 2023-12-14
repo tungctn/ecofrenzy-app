@@ -8,6 +8,7 @@ import 'package:flutter_app/views/layouts/navigation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app/views/screens/auth/sign_in.screen.dart';
 import 'package:flutter_app/views/screens/auth/sign_up.screen.dart';
+import 'package:flutter_app/views/screens/friend.screen.dart';
 import 'package:flutter_app/views/screens/profile.screen.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_app/provider/notifiers/challenge.notifier.dart';
@@ -68,6 +69,7 @@ class _MyAppState extends State<MyApp> {
               "/profile": (context) => const ProfileScreen(),
               "/sign-in": (context) => const SignInScreen(),
               "/sign-up": (context) => const SignUpScreen(),
+              "/friend": (context) => const FriendScreen(),
               "/": (context) => const Navigation(),
             },
             theme: ThemeData(

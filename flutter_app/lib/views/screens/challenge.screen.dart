@@ -183,9 +183,10 @@ class ChallengeScreenState extends State<ChallengeScreen> {
                   children: [
                     Row(
                       children: [
-                        Expanded(
-                          child: const Text(
-                            "Challenges from your friends",
+                        const SizedBox(width: 12),
+                        const Expanded(
+                          child: Text(
+                            "Thử thách của bạn bè",
                             textAlign: TextAlign.left,
                             style: TextStyle(
                               fontSize: 16,
@@ -194,7 +195,7 @@ class ChallengeScreenState extends State<ChallengeScreen> {
                             ),
                           ),
                         ),
-                        SizedBox(width: 12),
+                        const SizedBox(width: 12),
                         !isShowFriendChallenges
                             ? TextButton(
                                 style: ButtonStyle(
@@ -206,7 +207,7 @@ class ChallengeScreenState extends State<ChallengeScreen> {
                                     isShowFriendChallenges = true;
                                   });
                                 },
-                                child: const Text("HERE",
+                                child: const Text("Ở ĐÂY",
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.w900)),
@@ -221,7 +222,7 @@ class ChallengeScreenState extends State<ChallengeScreen> {
                                     isShowFriendChallenges = false;
                                   });
                                 },
-                                icon: Icon(
+                                icon: const Icon(
                                   FontAwesomeIcons.x,
                                   color: Colors.white,
                                   size: 12,
@@ -229,7 +230,7 @@ class ChallengeScreenState extends State<ChallengeScreen> {
                       ],
                     ),
                     isShowFriendChallenges
-                        ? Container(
+                        ? SizedBox(
                             height: 320,
                             child: buildFriendChallenges(notifier),
                           )

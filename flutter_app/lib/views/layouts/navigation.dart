@@ -45,8 +45,6 @@ class NavigationState extends State<Navigation> {
     } else if (_selectedIndex == 2) {
       return const LeaderBoardScreen();
     } else if (_selectedIndex == 3) {
-      return const FriendScreen();
-    } else if (_selectedIndex == 4) {
       return const VoucherScreen();
     }
 
@@ -58,29 +56,39 @@ class NavigationState extends State<Navigation> {
       return const ChallengeScreen();
     } else if (_selectedIndex == 1) {
       return const FeedScreen();
-    } else if (_selectedIndex == 2) {
-      return const LeaderBoardScreen();
     } else if (_selectedIndex == 3) {
-      return const FriendScreen();
+      return const LeaderBoardScreen();
     } else if (_selectedIndex == 4) {
       return const VoucherScreen();
     }
+
     return const LearnScreen();
   }
 
   String _titleAppBar() {
     if (_selectedIndex == 0) {
-      return "Today Challenge";
+      return "Thử thách";
     } else if (_selectedIndex == 1) {
-      return "Feed";
+      return "Bảng tin";
     } else if (_selectedIndex == 2) {
-      return "Leaderboard";
+      return "Bảng xếp hạng";
     } else if (_selectedIndex == 3) {
-      return "Your Friends";
-    } else if (_selectedIndex == 4) {
       return "Mã giảm giá";
     }
 
+    return "Today Challenge";
+  }
+
+  String _titleAppBarPicker() {
+    if (_selectedIndex == 0) {
+      return "Thử thách";
+    } else if (_selectedIndex == 1) {
+      return "Bảng tin";
+    } else if (_selectedIndex == 3) {
+      return "Bảng xếp hạng";
+    } else if (_selectedIndex == 4) {
+      return "Mã giảm giá";
+    }
     return "Today Challenge";
   }
 
@@ -137,10 +145,18 @@ class NavigationState extends State<Navigation> {
               ),
             ),
             centerTitle: true,
-            leading: const Icon(Icons.supervisor_account),
+            leading: IconButton(
+                onPressed: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const FriendScreen()));
+                },
+                icon: const Icon(Icons.supervisor_account)),
             title: Text(
-              _titleAppBar(),
-              style: const TextStyle(fontSize: 25),
+              isPicked ? _titleAppBarPicker() : _titleAppBar(),
+              style: const TextStyle(
+                  fontFamily: "Ridley Grotesk Bold", fontSize: 25),
             ),
             actions: [
               IconButton(
@@ -189,22 +205,22 @@ class NavigationState extends State<Navigation> {
       ChallengeNotifier notifier) {
     List<BottomNavigationBarItem> items = [];
 
-    items.add(BottomNavigationBarItem(
+    items.add(const BottomNavigationBarItem(
       icon: SizedBox(
         height: 30,
         width: 30,
         child: Icon(FontAwesomeIcons.fire),
       ),
-      label: 'Challenge',
+      label: 'Thử thách',
     ));
 
-    items.add(BottomNavigationBarItem(
+    items.add(const BottomNavigationBarItem(
       icon: SizedBox(
         height: 30,
         width: 30,
         child: Icon(FontAwesomeIcons.compass),
       ),
-      label: 'Feed',
+      label: 'Tin mới',
     ));
     bool isPicked = notifier.challenges
         .any((e) => e.status == "Picked" || e.status == "Pending");
@@ -249,16 +265,10 @@ class NavigationState extends State<Navigation> {
     //   }
     // }
 
-    items.add(BottomNavigationBarItem(
+    items.add(const BottomNavigationBarItem(
       icon:
           SizedBox(height: 30, width: 30, child: Icon(FontAwesomeIcons.trophy)),
-      label: 'Leaderboard',
-    ));
-
-    items.add(BottomNavigationBarItem(
-      icon: SizedBox(
-          height: 30, width: 30, child: Icon(FontAwesomeIcons.userGroup)),
-      label: 'Friend',
+      label: 'BXH',
     ));
 
     items.add(BottomNavigationBarItem(

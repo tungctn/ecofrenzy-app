@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/core/utils/toast_utils.dart';
 import 'package:flutter_app/provider/actions/auth.action.dart';
 import 'package:flutter_app/provider/actions/user.action.dart';
 import 'package:flutter_app/provider/notifiers/auth.notifier.dart';
@@ -74,6 +75,11 @@ class _FriendScreenState extends State<FriendScreen> {
     });
     _addedStatus.addAll(List.generate(5, (index) => false));
     _requestStatus.addAll(List.generate(5, (index) => false));
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
     loadSuggestFriend();
   }
 
@@ -189,6 +195,11 @@ class _FriendScreenState extends State<FriendScreen> {
                         : setState(() {
                             _addedStatus[index] = true;
                           });
+                    _selectedIndex == 0
+                        ? ToastUtils.showToast(context,
+                            "Chấp nhận lời mời kết bạn", TypeToast.success)
+                        : ToastUtils.showToast(context,
+                            "Đã gửi lời mời kết bạn", TypeToast.success);
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color(0xff5F2AC5),
@@ -215,8 +226,11 @@ class _FriendScreenState extends State<FriendScreen> {
     return Consumer<UserNotifier>(builder: (context, notifier, _) {
       // print(notifier.suggestFriends);
       if (_isLoading) {
-        return const Center(
-          child: Loading(),
+        return Center(
+          child: Container(
+            color: Colors.white,
+            child: Loading(),
+          ),
         );
       }
       dynamic listRequests = notifier.requests
@@ -234,16 +248,33 @@ class _FriendScreenState extends State<FriendScreen> {
           .toList();
       return Scaffold(
         appBar: AppBar(
+          flexibleSpace: Container(
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                colors: [Color(0xFF38EB86), Color(0xFF39F5C4)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.vertical(
+                bottom: Radius.circular(20),
+              ),
+            ),
+          ),
+          centerTitle: true,
+          leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: const Icon(Icons.arrow_back)),
           title: const Text(
-            'Social network friends',
+            'Bạn bè mạng xã hội',
             style: TextStyle(fontWeight: FontWeight.bold),
           ),
-          automaticallyImplyLeading: false,
         ),
         body: Column(
           children: [
             Container(
-              height: 80,
+              height: 100,
               padding: const EdgeInsets.all(10),
               margin: const EdgeInsets.only(
                   bottom: 10, left: 10, right: 10, top: 10),
@@ -260,6 +291,7 @@ class _FriendScreenState extends State<FriendScreen> {
                   border: Border.all(color: Colors.grey)),
               child: Container(
                 margin: const EdgeInsets.only(left: 16.0, right: 16.0),
+                padding: const EdgeInsets.all(5),
                 child: Row(
                   crossAxisAlignment: CrossAxisAlignment.center,
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -270,9 +302,9 @@ class _FriendScreenState extends State<FriendScreen> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            margin: const EdgeInsets.only(bottom: 5.0),
+                            // margin: const EdgeInsets.only(bottom: 5),
                             child: const Text(
-                              "Your friends",
+                              "Bạn bè",
                               style: TextStyle(
                                   color: Color(0xff5b6172),
                                   fontSize: 24.0,
@@ -280,9 +312,9 @@ class _FriendScreenState extends State<FriendScreen> {
                             ),
                           ),
                           Container(
-                            padding: const EdgeInsets.only(top: 1),
+                            // padding: const EdgeInsets.only(bottom: 1),
                             child: Text(
-                              "You have ${authNotifier.user["friends"].length.toString()} friends",
+                              "Bạn có ${authNotifier.user["friends"].length.toString()} bạn bè",
                               style: const TextStyle(
                                 color: Color(0xff5b6172),
                                 fontSize: 14.0,
@@ -320,6 +352,19 @@ class _FriendScreenState extends State<FriendScreen> {
                             ),
                           )
                         ],
+                        // map list friend
+                        // authNotifier.user["friends"]
+                        //     .map<Widget>((e) => Positioned(
+                        //           left: authNotifier.user["friends"]
+                        //                   .indexOf(e) *
+                        //               30.0,
+                        //           child: CircleAvatar(
+                        //             radius: 24,
+                        //             backgroundImage:
+                        //                 NetworkImage(e["image"]),
+                        //           ),
+                        //         ))
+                        //     .toList(),
                       ),
                     ),
                   ],

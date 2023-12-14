@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app/core/utils/toast_utils.dart';
 import 'package:flutter_app/provider/actions/activity.action.dart';
 import 'package:flutter_app/provider/actions/auth.action.dart';
 import 'package:flutter_app/provider/actions/user.action.dart';
@@ -73,7 +74,11 @@ class ProfileScreenState extends State<ProfileScreen> {
   }
 
   String getYearUserJoin(String dateStr) {
+    print(dateStr);
     // Parse the string date
+    if (dateStr == "") {
+      return "";
+    }
     DateTime dateTime = DateTime.parse(dateStr);
 
     // Extract the year
@@ -135,6 +140,8 @@ class ProfileScreenState extends State<ProfileScreen> {
           _image = pickedFile;
         });
         await _uploadImage();
+        ToastUtils.showToast(
+            context, "Đổi ảnh đại diện thành công", TypeToast.success);
         loadProfile();
       }
     } catch (e) {
@@ -253,11 +260,9 @@ class ProfileScreenState extends State<ProfileScreen> {
                                     height: 10,
                                   ),
                                   Text(
-                                    'Thành viên từ ' +
-                                        getYearUserJoin(
-                                            notifier.user["createdAt"]),
+                                    'Thành viên từ ${getYearUserJoin(notifier.user!["createdAt"] ?? "")}',
                                     textAlign: TextAlign.center,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                       color: Color(0xFF6C7A9C),
                                       fontSize: 14,
                                       fontFamily: "Ridley Grotesk ExtraBold",
@@ -394,6 +399,10 @@ class ProfileScreenState extends State<ProfileScreen> {
                                           onPressed: () async {
                                             await AuthActions.logout(notifier);
                                             // ignore: use_build_context_synchronously
+                                            ToastUtils.showToast(
+                                                context,
+                                                "Đăng xuất thành công",
+                                                TypeToast.success);
                                             Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
