@@ -51,7 +51,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 Container(
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Forgot password',
+                    'Quên mật khẩu',
                     style: TextStyle(
                       color: Color(0xFF2B2945),
                       fontSize: 24,
@@ -74,7 +74,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 ),
                 const SizedBox(height: kDefaultPadding),
                 ButtonWidget(
-                  title: 'Send',
+                  title: 'Gửi email',
                   ontap: () {},
                 ),
                 const SizedBox(
@@ -86,7 +86,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     Row(
                       children: [
                         Text(
-                          "Remember your account ",
+                          "Bạn đã có tài khoản hãy ",
                           style: TextStyles.defaultStyle.blackTextColor
                               .setTextSize(kDefaultTextSize),
                         ),
@@ -101,7 +101,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           child: SizedBox(
                             height: 26,
                             child: Text(
-                              "Sign In",
+                              "Đăng nhập",
                               style: TextStyles.defaultStyle.bold
                                   .setColor(Color.fromARGB(255, 255, 255, 255))
                                   .setTextSize(20),

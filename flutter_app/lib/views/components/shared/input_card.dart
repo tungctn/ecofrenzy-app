@@ -83,7 +83,7 @@ class _InputCardState extends State<InputCard> {
           focusNode: focusNode,
           controller: _textController,
           decoration: InputDecoration(
-            labelText: "Name",
+            labelText: "Tên người dùng",
             border: InputBorder.none,
             labelStyle: TextStyles.defaultStyle.blackTextColor.light
                 .setTextSize(kDefaultTextSize / 1.1),
@@ -101,7 +101,7 @@ class _InputCardState extends State<InputCard> {
           focusNode: focusNode,
           controller: _textController,
           decoration: InputDecoration(
-            labelText: "User name",
+            labelText: "Tên đăng nhập",
             border: InputBorder.none,
             labelStyle: TextStyles.defaultStyle.blackTextColor.light
                 .setTextSize(kDefaultTextSize / 1.1),
@@ -175,7 +175,7 @@ class _InputCardState extends State<InputCard> {
             focusNode: focusNode,
             controller: _textController,
             decoration: InputDecoration(
-              labelText: "Password",
+              labelText: "Mật khẩu",
               border: InputBorder.none,
               labelStyle: TextStyles.defaultStyle.blackTextColor.light
                   .setTextSize(kDefaultTextSize / 1.1),
