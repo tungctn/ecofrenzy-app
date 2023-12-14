@@ -92,13 +92,10 @@ class FeedScreenState extends State<FeedScreen> {
                         return ListTile(
                             subtitle: Row(
                           children: [
-                            SizedBox(
-                              width: 50,
-                              height: 50,
-                              child: Image.network(
-                                comment['user']['image'],
-                                fit: BoxFit.cover,
-                              ),
+                            CircleAvatar(
+                              radius: 25,
+                              backgroundImage: NetworkImage(
+                                  comment['user']['image'].toString()),
                             ),
                             const SizedBox(width: 5),
                             Expanded(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app/core/constants/color_palatte.dart';
+import 'package:flutter_app/core/utils/toast_utils.dart';
 import 'package:flutter_app/models/challenge.dart';
 import 'package:flutter_app/provider/actions/challenge.action.dart';
 import 'package:flutter_app/provider/notifiers/challenge.notifier.dart';
@@ -329,23 +330,27 @@ class ChallengeCardState extends State<ChallengeCard> {
                                               label: const Text(""),
                                             ),
                                           ),
-                                          if (isPicked)
-                                            Expanded(
-                                                child: FittedBox(
-                                              child: TextButton.icon(
-                                                onPressed: () {
-                                                  ChallengeActions.pickChallenge(
-                                                      context.read<
-                                                          ChallengeNotifier>(),
-                                                      challenge.id);
-                                                  setState(() {
-                                                    isExpanded = true;
-                                                  });
-                                                },
-                                                icon: likeIcon,
-                                                label: const Text(""),
-                                              ),
-                                            )),
+                                          // if (!isPicked)
+                                          Expanded(
+                                              child: FittedBox(
+                                            child: TextButton.icon(
+                                              onPressed: () {
+                                                ChallengeActions.pickChallenge(
+                                                    context.read<
+                                                        ChallengeNotifier>(),
+                                                    challenge.id);
+                                                setState(() {
+                                                  isExpanded = !isExpanded;
+                                                });
+                                                ToastUtils.showToast(
+                                                    context,
+                                                    "Chọn nhiệm vụ thành công",
+                                                    TypeToast.success);
+                                              },
+                                              icon: likeIcon,
+                                              label: const Text(""),
+                                            ),
+                                          )),
                                           Expanded(
                                             child: TextButton.icon(
                                               onPressed: () {

@@ -153,7 +153,7 @@ class _ChallengeDetectorViewState extends State<ChallengeDetectorView> {
       print(predictResponse['success']);
       if (predictResponse['success']) {
         ToastUtils.showToast(
-            context, predictResponse["message"], TypeToast.success);
+            context, "Chúc mừng bạn đã hoàn thành nhiệm vụ", TypeToast.success);
 
         final post = {
           "image": jsonDecode(response.body.toString())['data']['image']['url'],
@@ -169,7 +169,7 @@ class _ChallengeDetectorViewState extends State<ChallengeDetectorView> {
             postNotifier, post['image'], post['challengeId']);
       } else {
         ToastUtils.showToast(
-            context, predictResponse["message"], TypeToast.error);
+            context, "Ảnh chưa đúng với nhiệm vụ", TypeToast.error);
       }
     } else {
       print("Upload failed with status code: ${response.statusCode}");
