@@ -87,7 +87,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     Container(
                       alignment: Alignment.centerLeft,
                       child: Text(
-                        'Sign Up',
+                        'Đăng ký',
                         style: TextStyle(
                           color: Color(0xFF2B2945),
                           fontSize: 24,
@@ -136,7 +136,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       height: 20,
                     ),
                     ButtonWidget(
-                      title: "Sign Up",
+                      title: "Đăng ký",
                       ontap: () {
                         handleRegister(context);
                       },
@@ -150,7 +150,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         Row(
                           children: [
                             Text(
-                              "You have account ",
+                              "Bạn đã có tài khoản hãy ",
                               style: TextStyles.defaultStyle.blackTextColor
                                   .setTextSize(kDefaultTextSize),
                             ),
@@ -166,7 +166,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                               child: SizedBox(
                                 height: 26,
                                 child: Text(
-                                  "Sign In",
+                                  "Đăng nhập",
                                   style: TextStyles.defaultStyle.bold
                                       .setColor(
                                           Color.fromARGB(255, 255, 255, 255))

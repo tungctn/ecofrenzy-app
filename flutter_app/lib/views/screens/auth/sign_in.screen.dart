@@ -108,7 +108,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             Container(
                               alignment: Alignment.centerLeft,
                               child: Text(
-                                'Sign In',
+                                'Đăng nhập',
                                 style: TextStyle(
                                   color: Color(0xFF2B2945),
                                   fontSize: 24,
@@ -184,7 +184,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                           width: kDefaultPadding / 2,
                                         ),
                                         Text(
-                                          "Remember Me",
+                                          "Lưu thông tin",
                                           style: TextStyles
                                               .defaultStyle.light.blackTextColor
                                               .setTextSize(
@@ -205,7 +205,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                   child: SizedBox(
                                     height: 22,
                                     child: Text(
-                                      "Forgot Password",
+                                      "Quên mật khẩu",
                                       style: TextStyles.defaultStyle.light
                                           .setColor(Color.fromARGB(
                                               255, 255, 255, 255))
@@ -219,7 +219,7 @@ class _SignInScreenState extends State<SignInScreen> {
                               height: kDefaultPadding,
                             ),
                             ButtonWidget(
-                              title: "Sign In",
+                              title: "Đăng nhập",
                               ontap: () async {
                                 // if (rememberMe == true) {
                                 //   LocalStorageHelper.setValue("email", email);
@@ -243,7 +243,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                 Row(
                                   children: [
                                     Text(
-                                      "Don't have account ",
+                                      "Bạn không có tài khoản hãy ",
                                       style: TextStyles
                                           .defaultStyle.blackTextColor
                                           .setTextSize(kDefaultTextSize),
@@ -259,7 +259,7 @@ class _SignInScreenState extends State<SignInScreen> {
                                       child: SizedBox(
                                         height: 26,
                                         child: Text(
-                                          "Sign Up",
+                                          "Đăng ký",
                                           style: TextStyles.defaultStyle.bold
                                               .setColor(Color.fromARGB(
                                                   255, 255, 255, 255))
