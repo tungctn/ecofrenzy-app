@@ -207,7 +207,7 @@ class ChallengeScreenState extends State<ChallengeScreen> {
                                     isShowFriendChallenges = true;
                                   });
                                 },
-                                child: const Text("HERE",
+                                child: const Text("Ở ĐÂY",
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.w900)),

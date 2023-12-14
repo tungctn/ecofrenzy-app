@@ -57,11 +57,11 @@ class NavigationState extends State<Navigation> {
     } else if (_selectedIndex == 1) {
       return const FeedScreen();
     } else if (_selectedIndex == 3) {
+      return const LeaderBoardScreen();
+    } else if (_selectedIndex == 4) {
       return const VoucherScreen();
     }
-    // else if (_selectedIndex == 4) {
-    //   return const VoucherScreen();
-    // }
+
     return const LearnScreen();
   }
 
@@ -87,7 +87,7 @@ class NavigationState extends State<Navigation> {
     } else if (_selectedIndex == 3) {
       return "Bảng xếp hạng";
     } else if (_selectedIndex == 4) {
-      return "Bạn bè";
+      return "Mã giảm giá";
     }
     return "Today Challenge";
   }
@@ -211,7 +211,7 @@ class NavigationState extends State<Navigation> {
         width: 30,
         child: Icon(FontAwesomeIcons.fire),
       ),
-      label: 'Challenge',
+      label: 'Thử thách',
     ));
 
     items.add(const BottomNavigationBarItem(
@@ -220,7 +220,7 @@ class NavigationState extends State<Navigation> {
         width: 30,
         child: Icon(FontAwesomeIcons.compass),
       ),
-      label: 'Feed',
+      label: 'Tin mới',
     ));
     bool isPicked = notifier.challenges
         .any((e) => e.status == "Picked" || e.status == "Pending");
@@ -268,7 +268,7 @@ class NavigationState extends State<Navigation> {
     items.add(const BottomNavigationBarItem(
       icon:
           SizedBox(height: 30, width: 30, child: Icon(FontAwesomeIcons.trophy)),
-      label: 'Leaderboard',
+      label: 'BXH',
     ));
 
     items.add(BottomNavigationBarItem(
