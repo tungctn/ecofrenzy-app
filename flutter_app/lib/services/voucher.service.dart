@@ -9,7 +9,7 @@ class VoucherService {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
     final response = await http.get(
         Uri.parse(
-            'https://api.bloggiamgia.vn/api/b/Voucher/home-shopee?offer=shopee&page=1&pageSize=8'),
+            'https://api.bloggiamgia.vn/api/b/Voucher/home-shopee?offer=shopee&page=1&pageSize=10'),
         headers: <String, String>{
           'Authorization': 'Bearer ${prefs.getString('token')}',
         });
