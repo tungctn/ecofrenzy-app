@@ -217,7 +217,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                       Container(
                         alignment: Alignment.center,
                         width: double.infinity,
-                        height: 340,
+                        height: 360,
                         child: Stack(children: <Widget>[
                           Container(
                               alignment: Alignment.center,
@@ -226,7 +226,7 @@ class ProfileScreenState extends State<ProfileScreen> {
                               padding:
                                   const EdgeInsets.only(left: 20, right: 20),
                               width: double.infinity,
-                              height: 250,
+                              height: 270,
                               decoration: ShapeDecoration(
                                 color: Colors.white,
                                 shape: RoundedRectangleBorder(

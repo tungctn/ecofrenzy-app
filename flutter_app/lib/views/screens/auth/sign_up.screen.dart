@@ -147,7 +147,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Row(
+                        Column(
                           children: [
                             Text(
                               "Bạn đã có tài khoản hãy ",

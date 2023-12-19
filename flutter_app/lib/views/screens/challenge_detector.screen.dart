@@ -12,9 +12,8 @@ import 'package:flutter_app/provider/notifiers/post.notifier.dart';
 import 'package:flutter_app/services/image.service.dart';
 import 'package:flutter_app/utils/icon.dart';
 import 'package:flutter_app/views/components/challenge/challenge_camera.card.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:http_parser/http_parser.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -129,39 +128,49 @@ class _ChallengeDetectorViewState extends State<ChallengeDetectorView> {
     }
   }
 
+  // pick image from gallery
+  Future<void> _pickImage(Challenge challenge) async {
+    final image = await ImagePicker().pickImage(source: ImageSource.gallery);
+    if (image == null) return;
+    setState(() {
+      _isLoading = true;
+    });
+    await uploadImageToServer(image.path, challenge.id, challenge);
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
   Future<void> uploadImageToServer(
       String filePath, String challengeId, Challenge challenge) async {
-    var uri = Uri.parse("http://34.142.196.144:4000/api/images");
-    final SharedPreferences prefs = await SharedPreferences.getInstance();
-    var request = http.MultipartRequest('POST', uri)
-      ..headers.addAll({'Authorization': 'Bearer $token'})
-      ..files.add(await http.MultipartFile.fromPath(
-        'image',
-        filePath,
-        contentType: MediaType('image', 'jpg'),
-      ));
+    // var uri = Uri.parse(
+    //     "https://vqgadqmdoc.execute-api.ap-southeast-1.amazonaws.com/prod/api/upload");
+    // // final SharedPreferences prefs = await SharedPreferences.getInstance();
+    // var request = http.MultipartRequest('POST', uri)
+    //   // ..headers.addAll({'Authorization': 'Bearer $token'})
+    //   ..files.add(await http.MultipartFile.fromPath(
+    //     'image',
+    //     filePath,
+    //     contentType: MediaType('image', 'jpg'),
+    //   ));
 
-    var streamedResponse = await request.send();
-    var response = await http.Response.fromStream(streamedResponse);
-    if (response.statusCode == 200) {
-      // if (response != null) {
-      print("Response body: ${response.body}");
-      print(jsonDecode(response.body.toString())['data']['image']['url']);
-      var predictResponse = await ImageService().predictImage(
-          jsonDecode(response.body.toString())['data']['image']['url'],
-          challenge);
+    // var streamedResponse = await request.send();
+    // var response = await http.Response.fromStream(streamedResponse);
+    var urlImage = await ImageService().uploadImageToServer(filePath);
+    print(urlImage);
+    if (urlImage != null) {
+      var predictResponse =
+          await ImageService().predictImage(urlImage, challenge);
       print(predictResponse['success']);
       if (predictResponse['success']) {
         ToastUtils.showToast(
             context, "Chúc mừng bạn đã hoàn thành nhiệm vụ", TypeToast.success);
 
         final post = {
-          "image": jsonDecode(response.body.toString())['data']['image']['url'],
+          "image": urlImage,
           "challengeId": challenge.id.toString(),
         };
-        print(post['image']);
-        print(post['challengeId']);
-        // ignore: use_build_context_synchronously
+        print(post);
         Navigator.pop(context);
         ChallengeActions.doneChallenge(
             challengeNotifier, challengeId, post['image'], postNotifier);
@@ -169,11 +178,10 @@ class _ChallengeDetectorViewState extends State<ChallengeDetectorView> {
             postNotifier, post['image'], post['challengeId']);
       } else {
         ToastUtils.showToast(
-            context, "Ảnh chưa đúng với nhiệm vụ", TypeToast.error);
+            context, predictResponse["message"], TypeToast.error);
       }
     } else {
-      print("Upload failed with status code: ${response.statusCode}");
-      print("Response body: ${response.body}");
+      ToastUtils.showToast(context, "Upload image failed", TypeToast.error);
     }
   }
 
@@ -202,6 +210,7 @@ class _ChallengeDetectorViewState extends State<ChallengeDetectorView> {
             _cameraAltButton(challengePicked.first),
             _isLoading ? _loadingWidget() : const SizedBox.shrink(),
             _flashCameraButton(),
+            // _imageCameraButton(challengePicked.first),
             _toggleCameraButton(),
           ],
         ),
@@ -293,4 +302,21 @@ class _ChallengeDetectorViewState extends State<ChallengeDetectorView> {
           ),
         ),
       );
+  // get image from camera
+  // Widget _imageCameraButton(Challenge challenge) => Positioned(
+  //       bottom: 40,
+  //       left: 20,
+  //       child: Container(
+  //         decoration: BoxDecoration(
+  //           color: Colors.white,
+  //           borderRadius: BorderRadius.circular(50),
+  //         ),
+  //         height: 60,
+  //         width: 60,
+  //         child: IconButton(
+  //           icon: const Icon(Icons.bolt, size: 40),
+  //           onPressed: () => _pickImage(challenge),
+  //         ),
+  //       ),
+  //     );
 }

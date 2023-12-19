@@ -1,0 +1,44 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Express API Gateway and Lambda Function, with EventBridge
+
+Resources:
+  UploadApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: prod
+      BinaryMediaTypes: ["*/*"]
+
+  UploadFunctionRole:
+    Type: AWS::IAM::Role
+    Properties:
+      RoleName: ServiceFunctionRole
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          - Effect: Allow
+            Principal:
+              Service: lambda.amazonaws.com
+            Action: sts:AssumeRole
+
+  UploadFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: ./
+      Handler: index.handler
+      Runtime: nodejs18.x
+      MemorySize: 512
+      Role: !GetAtt UploadFunctionRole.Arn
+      Events:
+        UploadFunctionProxy:
+          Type: Api
+          Properties:
+            RestApiId: !Ref UploadApi
+            Path: "/{proxy+}"
+            Method: ANY
+
+Outputs:
+  UploadApiEndpoint:
+    Description: "API Gateway endpoint URL for Prod stage for Express function"
+    Value: !Sub "https://${UploadApi}.execute-api.${AWS::Region}.amazonaws.com/prod"

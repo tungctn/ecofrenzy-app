@@ -240,7 +240,7 @@ class _SignInScreenState extends State<SignInScreen> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Row(
+                                Column(
                                   children: [
                                     Text(
                                       "Bạn không có tài khoản hãy ",
