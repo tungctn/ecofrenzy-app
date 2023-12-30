@@ -1,0 +1,63 @@
+  AWSTemplateFormatVersion: "2010-09-09"
+  Transform: AWS::Serverless-2016-10-31
+  Description: >
+    Express API Gateway and Lambda Function, with EventBridge
+
+  Resources:
+    ExpressApi:
+      Type: AWS::Serverless::Api
+      Properties:
+        StageName: prod
+        BinaryMediaTypes: ["*/*"]
+
+    ExpressFunctionRole:
+      Type: AWS::IAM::Role
+      Properties:
+        RoleName: FunctionServiceRole
+        AssumeRolePolicyDocument:
+          Version: "2012-10-17"
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service: lambda.amazonaws.com
+              Action: sts:AssumeRole
+
+    ExpressFunction:
+      Type: AWS::Serverless::Function
+      Properties:
+        CodeUri: ./
+        Handler: index.handler
+        Runtime: nodejs18.x
+        MemorySize: 512
+        Role: !GetAtt ExpressFunctionRole.Arn
+        Events:
+          ExpressFunctionProxy:
+            Type: Api
+            Properties:
+              RestApiId: !Ref ExpressApi
+              Path: "/{proxy+}"
+              Method: ANY
+
+    
+    # ExpressFunctionEventBridgeRule:
+    #   Type: AWS::Events::Rule
+    #   Properties:
+    #     EventPattern:
+    #       source:
+    #         - "aws.s3"
+    #       detail-type:
+    #         - "AWS API Call via CloudTrail"
+    #       detail:
+    #         eventSource:
+    #           - "s3.amazonaws.com"
+    #         eventName:
+    #           - "PutObject"
+    #     Targets:
+    #       - Arn: !GetAtt ExpressFunction.Arn
+    #         Id: "ExpressFunctionEventBridgeRuleTarget"
+
+
+  Outputs:
+    ExpressApiEndpoint:
+      Description: "API Gateway endpoint URL for Prod stage for Express function"
+      Value: !Sub "https://${ExpressApi}.execute-api.${AWS::Region}.amazonaws.com/prod"

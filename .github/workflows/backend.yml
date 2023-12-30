@@ -1,0 +1,48 @@
+name: Deploy Web App to Cloud Server
+
+on:
+  push:
+    paths:
+      - "backend/**"
+      - ".github/**"
+    branches: ["main"]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+      - name: Set up Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: "18"
+      - name: Set up AWS credentials
+        run: |
+          sudo apt update
+          sudo apt-get install awscli
+          aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws configure set default.region ap-southeast-1
+          aws configure set default.output json
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: "3.8"
+      - name: Install SAM
+        run: |
+          pip install aws-sam-cli
+      - name: Build
+        run: |
+          cd backend
+          npm install
+          sam build
+      - name: Deploy
+        run: |
+          cd backend
+          sam deploy --stack-name backend-ecofrenzy --resolve-s3 --region ap-southeast-1 --capabilities CAPABILITY_AUTO_EXPAND CAPABILITY_IAM CAPABILITY_NAMED_IAM --no-confirm-changeset

@@ -1,0 +1,179 @@
+2023-08-16 14:07:24 info: Challenges generated
+2023-08-16 14:07:24 info: [object Object]
+2023-08-16 14:09:15 info: Challenges generated
+2023-08-16 14:09:15 info: undefined
+2023-08-16 14:10:54 info: Challenges generated
+2023-08-16 14:10:54 info: undefined
+2023-10-21 23:38:06 info: Challenges generated
+2023-10-21 23:38:06 info: undefined
+2023-10-21 23:38:45 info: Challenges generated
+2023-10-21 23:38:45 info: [object Object]
+2023-10-21 23:41:24 info: Challenges generated
+2023-10-21 23:41:24 info: [object Object]
+2023-10-21 23:42:27 info: Challenges generated
+2023-10-21 23:42:27 info: undefined
+2023-10-21 23:42:52 info: Challenges generated
+2023-10-21 23:42:52 info: undefined
+2023-10-21 23:47:03 info: Challenges retrieved successfully
+2023-10-21 23:47:03 info: [object Object]
+2023-10-21 23:47:03 info: Challenges generated
+2023-10-21 23:47:03 info: undefined
+2023-10-21 23:47:23 info: Challenges retrieved successfully
+2023-10-21 23:47:23 info: Challenges generated
+2023-10-21 23:47:23 info: undefined
+2023-10-21 23:57:36 info: Challenges retrieved successfully
+2023-10-21 23:57:36 info: Challenges generated
+2023-10-21 23:57:36 info: {
+  _id: new ObjectId("648eed0e2599ec57ecb287f1"),
+  name: 'Public Transportation Usage',
+  point: 50,
+  category: 'Transportation',
+  impact: 'Encourages users to utilize public transit, reducing the number of single-occupancy vehicles on the road and lowering carbon emissions.',
+  caption: '',
+  description: 'Use public transportation for your commute. Share a picture of you using public transit.',
+  level: 'Easy',
+  creativity: 'Direct',
+  verification: [
+    {
+      question: 'Does this?',
+      desiredAnswer: 'yes',
+      _id: new ObjectId("648eed0e2599ec57ecb287f2")
+    },
+    {
+      question: 'Does this photo relate to person in a pubic transport?',
+      desiredAnswer: 'no',
+      _id: new ObjectId("648eed0e2599ec57ecb287f3")
+    }
+  ],
+  status: 'Start',
+  url: '',
+  isDone: false
+},{
+  _id: new ObjectId("5f9d88b3c3e6c3b3e4e3e4e7"),
+  name: 'Bring Your Own Bag',
+  point: 50,
+  category: 'Consumption',
+  impact: 'Reduce plastic waste, promote eco-friendly habits',
+  caption: '',
+  description: 'Commit to bringing your own reusable bags when shopping instead of using single-use plastic bags. Make a conscious effort to avoid unnecessary plastic waste.',
+  level: 'Easy',
+  creativity: 'Direct',
+  verification: [
+    {
+      question: 'Is there a bag or anything considered as a bag that a flexible container used for carrying and storing various items?',
+      desiredAnswer: 'yes',
+      _id: new ObjectId("648eed0e2599ec57ecb287fd")
+    },
+    {
+      question: 'Is there any bag made from non-environmentally friendly materials like plastic bags?',
+      desiredAnswer: 'no',
+      _id: new ObjectId("648eed0e2599ec57ecb287fe")
+    }
+  ],
+  status: 'Start',
+  url: '',
+  isDone: false
+},{
+  _id: new ObjectId("648ef293e082bebc91ec2ad3"),
+  name: 'Use Natural Light',
+  point: 50,
+  category: 'Energy and Resources',
+  impact: 'Reduce energy consumption by utilizing natural light during the day.',
+  caption: '',
+  description: 'Turn off your lights and open your curtains to let in natural light. Share a picture of your naturally lit room.',
+  level: 'Easy',
+  creativity: 'Direct',
+  verification: [
+    {
+      question: 'Does this picture show a room lit by natural light?',
+      desiredAnswer: 'Yes',
+      _id: new ObjectId("648ef293e082bebc91ec2ad4")
+    },
+    {
+      question: 'Is there a light in the photo?',
+      desiredAnswer: 'Yes',
+      _id: new ObjectId("648ef293e082bebc91ec2ad5")
+    }
+  ],
+  status: 'Start',
+  url: '',
+  isDone: false
+}
+2023-10-22 00:10:08 info: Challenges retrieved successfully
+2023-10-22 00:10:08 info: Challenges generated
+2023-10-22 00:10:08 info: {
+  _id: new ObjectId("648ef293e082bebc91ec2ad3"),
+  name: 'Use Natural Light',
+  point: 50,
+  category: 'Energy and Resources',
+  impact: 'Reduce energy consumption by utilizing natural light during the day.',
+  caption: '',
+  description: 'Turn off your lights and open your curtains to let in natural light. Share a picture of your naturally lit room.',
+  level: 'Easy',
+  creativity: 'Direct',
+  verification: [
+    {
+      question: 'Does this picture show a room lit by natural light?',
+      desiredAnswer: 'Yes',
+      _id: new ObjectId("648ef293e082bebc91ec2ad4")
+    },
+    {
+      question: 'Is there a light in the photo?',
+      desiredAnswer: 'Yes',
+      _id: new ObjectId("648ef293e082bebc91ec2ad5")
+    }
+  ],
+  status: 'Start',
+  url: '',
+  isDone: false
+},{
+  _id: new ObjectId("648eed0e2599ec57ecb287ee"),
+  name: 'Use Natural Light',
+  point: 50,
+  category: 'Energy and Resources',
+  impact: 'Reduce energy consumption by utilizing natural light during the day.',
+  caption: '',
+  description: 'Turn off your lights and open your curtains to let in natural light. Share a picture of your naturally lit room.',
+  level: 'Easy',
+  creativity: 'Direct',
+  verification: [
+    {
+      question: 'Does this picture show a room lit by natural light?',
+      desiredAnswer: 'Yes',
+      _id: new ObjectId("648eed0e2599ec57ecb287ef")
+    },
+    {
+      question: 'Is there a light in the photo?',
+      desiredAnswer: 'Yes',
+      _id: new ObjectId("648eed0e2599ec57ecb287f0")
+    }
+  ],
+  status: 'Start',
+  url: '',
+  isDone: false
+},{
+  _id: new ObjectId("5f9d88b3c3e6c3b3e4e3e4e6"),
+  name: 'Bike to Work',
+  point: 50,
+  category: 'Transportation',
+  impact: 'Reduce carbon emissions, improve physical fitness',
+  caption: '',
+  description: 'Pledge to commute to work using a bicycle instead of a car or public transportation for a week. Track your progress and encourage others to join.',
+  level: 'Intermediate',
+  creativity: 'Direct',
+  verification: [
+    {
+      question: 'Is there a bicycle in the photo?',
+      desiredAnswer: 'yes',
+      _id: new ObjectId("648eed0e2599ec57ecb287fa")
+    },
+    {
+      question: 'Is there a bicycle in the photo and a cycling-related activity?',
+      desiredAnswer: 'yes',
+      _id: new ObjectId("648eed0e2599ec57ecb287fb")
+    }
+  ],
+  status: 'Start',
+  url: '',
+  isDone: false
+}
