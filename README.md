@@ -1,5 +1,7 @@
 BTL Chuyên đề công nghệ Nhật Bản
 
+Folder chung: https://drive.google.com/drive/folders/1eFCqNc6BbyzE--7RiW93PYH5SiDpbTuP?usp=sharing
+
 Challenge pool: https://docs.google.com/document/d/1jFAsEbj4D2bk6bhdXevV4XiiSo6g09LnB7Wews7X7_g/edit?usp=sharing
 API backend: https://nnv7xc0r7d.execute-api.ap-southeast-1.amazonaws.com/prod/api
 Tính năng cơ bản của sản phẩm
